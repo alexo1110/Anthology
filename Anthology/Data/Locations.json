@@ -1,0 +1,22 @@
+[
+  {
+    "Name": "Pub",
+    "X": 3,
+    "Y": 4,
+    "Tags": [
+      "food",
+      "drink"
+    ]
+  },
+  {
+    "Name": "Grocery Store",
+    "X": 5,
+    "Y": 3,
+    "Tags": [
+      "food",
+      "store",
+      "groceries",
+      "pharmacy"
+    ]
+  }
+]

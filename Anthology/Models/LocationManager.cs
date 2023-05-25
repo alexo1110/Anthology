@@ -1,15 +1,55 @@
-﻿namespace Anthology.Models
+﻿using System.Text.Json;
+
+namespace Anthology.Models
 {
     /** Provides functionality for checking location-centric conditions */
     public static class LocationManager
     {
-        /** Locations in the simulation */
-        public static HashSet<SimLocation> SimLocations { get; set; } = new HashSet<SimLocation>();
+        /** Locations in the simulation as a set for set operations */
+        public static HashSet<SimLocation> LocationSet { get; set; } = new HashSet<SimLocation>();
 
-        /** Initialize/reset all static location manager variables */
-        public static void Init()
+        /** Locations in the simulation as a grid for coordinate access */
+        public static Dictionary<int, Dictionary<int, SimLocation>> LocationGrid { get; set; } = new Dictionary<int, Dictionary<int, SimLocation>>();
+
+        /** Initialize/reset all static location manager variables and fill an empty N x N grid */
+        public static void Init(int n)
         {
-            SimLocations.Clear();
+            LocationSet.Clear();
+            LocationGrid.Clear();
+            for (int i = 0; i < n; i++)
+            {
+                LocationGrid[i] = new Dictionary<int, SimLocation>();
+                for (int k = 0; k < n; k++)
+                {
+                    LocationGrid[i][k] = new SimLocation();
+                }
+            }
+        }
+
+        /** Add a location to both the location set and the location grid */
+        public static void AddLocation(SimLocation location)
+        {
+            foreach (Agent a in AgentManager.Agents)
+            {
+                if (a.XLocation == location.X && a.YLocation == location.Y)
+                {
+                    location.AgentsPresent.Add(a.Name);
+                }
+            }
+            LocationSet.Add(location);
+            LocationGrid[location.X][location.Y] = location;
+        }
+
+        /** Finds the location with the matching name */
+        public static SimLocation GetSimLocationByName(string name)
+        {
+            bool IsNameMatch(SimLocation location)
+            {
+                return location.Name == name;
+            }
+
+            SimLocation location = LocationSet.First(IsNameMatch);
+            return location;
         }
 
         /** 
@@ -73,7 +113,8 @@
         /** Returns the SimLocation nearest the given Agent, or null if one does not exist */
         public static SimLocation? FindNearestLocationFrom(HashSet<SimLocation> locations, Agent from)
         {
-            return FindNearestLocationFrom(locations, from.CurrentLocation);
+            SimLocation locFrom = LocationGrid[from.XLocation][from.YLocation];
+            return FindNearestLocationFrom(locations, locFrom);
         }
 
 
@@ -123,6 +164,34 @@
             Random r = new();
             int idx = r.Next(0, closestSet.Count);
             return closestSet.ElementAt(idx);
+        }
+
+        /** Returns a JSON string representing the set of all named locations in the simulation */
+        public static string SerializeAllLocations()
+        {
+            static bool HasName(SimLocation simLocation)
+            {
+                return simLocation.Name != string.Empty;
+            }
+
+            IEnumerable<SimLocation> namedLocations = LocationSet.Where(HasName);
+            return JsonSerializer.Serialize(namedLocations, UI.Jso);
+        }
+
+        /**
+         * Populates the set of locations in the simulation from the given file path
+         * If the given file cannot be read or is formatted incorrectly, an exception will be thrown
+         */
+        public static void LoadLocationsFromFile(string path)
+        {
+            string locationsText = File.ReadAllText(path);
+            IEnumerable<SimLocation>? sLocations = JsonSerializer.Deserialize<IEnumerable<SimLocation>>(locationsText, UI.Jso);
+
+            if (sLocations == null) return;
+            foreach (SimLocation l in sLocations)
+            {
+                AddLocation(l);
+            }
         }
     }
 }

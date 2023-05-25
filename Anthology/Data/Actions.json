@@ -1,0 +1,42 @@
+{
+  "ScheduleActions": [],
+  "PrimaryActions": [
+    {
+      "Name": "wait_action",
+      "MinTime": 0,
+      "Hidden": false,
+      "Requirements": {},
+      "Effects": []
+    },
+    {
+      "Name": "travel_action",
+      "MinTime": 0,
+      "Hidden": false,
+      "Requirements": {},
+      "Effects": []
+    },
+    {
+      "Name": "eat_out",
+      "MinTime": 60,
+      "Hidden": false,
+      "Requirements": {
+        "Location Requirements": [
+          {
+            "HasAllOf": [
+              "restaurant",
+              "open"
+            ],
+            "HasOneOrMoreOf": [],
+            "HasNoneOf": []
+          }
+        ]
+      },
+      "Effects": [
+        {
+          "Type": "physical",
+          "Delta": 2
+        }
+      ]
+    }
+  ]
+}

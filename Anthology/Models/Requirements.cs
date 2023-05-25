@@ -1,41 +1,40 @@
-﻿namespace Anthology.Models
+﻿using System.Text.Json.Serialization;
+
+namespace Anthology.Models
 {
-    // Three types of requirements
-    /**
-     * Requirement types enum
-     * Consists of three types of requirements
-     */
-    public enum ReqEnum
+    /** Binary operation strings used for requirement threshold relationships */
+    public static class BinOps
     {
-        // indicates a location requirement
-        LOCATION = 0,
+        /** the string name of = relationships */
+        public const string EQUALS = "=";
 
-        // indicates a people requirement
-        PEOPLE = 1,
+        /** the string name of > relationships */
+        public const string GREATER = ">";
 
-        // indicates a motive requirement
-        MOTIVE = 2
-    }
+        /** the string name of < relationships */
+        public const string LESS = "<";
 
-    /**
-     * Binary operations enum
-     * Used primarily in requirements to test conditions
-     * eg. RMotive : social motive must be greater than 5
-     */
-    public enum BinOpEnum
-    {
-        EQUALS = 0,
-        GREATER = 1,
-        LESS = 2,
-        GREATER_EQUALS = 3,
-        LESS_EQUALS = 4
+        /** the string name of >= relationships */
+        public const string GREATER_EQUALS = ">=";
+
+        /** the string name of <= relationships */
+        public const string LESS_EQUALS = "<=";
     }
 
     /** Requirement class all requirement types should inherit from */
     public abstract class Requirement
     {
         /** all requirements should have an enumerated type (or a string for file IO?) */
-        public abstract ReqEnum Type { get; }
+        public abstract string ReqType { get; }
+
+        /** the string name of location type requirements */
+        public const string LOCATION = "location";
+
+        /** the string name of people type requirements */
+        public const string PEOPLE = "people";
+
+        /** the string name of motive type requirements */
+        public const string MOTIVE = "motive";
     }
 
     /** 
@@ -46,18 +45,22 @@
      */
     public class RLocation : Requirement
     {
-        public override ReqEnum Type
+        [JsonIgnore]
+        public override string ReqType
         {
-            get { return ReqEnum.LOCATION; }
+            get { return LOCATION; }
         }
 
         /** set of string tags that must be a subset of the location's tags for the action to occur */
-        public HashSet<string> HasAllOf { get; set; } = new HashSet<string>(); 
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+        public HashSet<string> HasAllOf { get; set; } = new HashSet<string>();
 
         /** set of string tags in which their must exist at least one match with the location's tags for the action to occur */
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         public HashSet<string> HasOneOrMoreOf { get; set; } = new HashSet<string>();
 
         /** set of string tags that must be a disjoint set of the location's tags for the action to occur */
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         public HashSet<string> HasNoneOf { get; set; } = new HashSet<string>();
     }
 
@@ -68,9 +71,10 @@
      */
     public class RPeople : Requirement
     {
-        public override ReqEnum Type
+        [JsonIgnore]
+        public override string ReqType
         {
-            get { return ReqEnum.PEOPLE; }
+            get { return PEOPLE; }
         }
 
         /** the minimum number of people that must be present for the action to occur */
@@ -83,42 +87,104 @@
          * set of agents that must be present for the action to be completed.
          * eg. A cook must be present at a restaurant for food to be served to a customer.
          */
-        public HashSet<Agent> SpecificPeoplePresent { get; set; } = new HashSet<Agent>();
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+        public HashSet<string> SpecificPeoplePresent { get; set; } = new HashSet<string>();
 
         /** set of agents that must be absent for the action to be completed. */
-        public HashSet<Agent> SpecificPeopleAbsent { get; set; } = new HashSet<Agent>();
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+        public HashSet<string> SpecificPeopleAbsent { get; set; } = new HashSet<string>();
 
         /**
          * Relationships that must exist between participating agents in order for the action to execute
          * eg. [teacher, student] relationships for the action "submit_homework"
          */
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         public HashSet<string> RelationshipsPresent { get; set; } = new HashSet<string>();
 
         /**
          * Relationships that must not exist between participating agents in order for the action to execute
          * eg. [siblings] relationship for the action "kiss_romantically"
          */
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         public HashSet<string> RelationshipsAbsent { get; set; } = new HashSet<string>();
     }
 
-
+    /**
+     * Motive Requirement
+     * Requirements on the executing agent's current motive scores
+     * eg. motive:"financial" > 2 implies the agent must have at least 2 financial score to execute the action
+     */
     public class RMotive : Requirement
     {
-        public override ReqEnum Type
+        [JsonIgnore]
+        public override string ReqType
         {
-            get { return ReqEnum.MOTIVE; }
+            get { return MOTIVE; }
         }
 
         /** 
          * describes the type of motive that must be tested for this requirement 
          * eg. Emotional, Social, Financial, etc.
          */
-        public MotiveEnum MotiveType { get; set; }
+        public string MotiveType { get; set; } = string.Empty;
 
         /** Binary Operation used to test condition */
-        public BinOpEnum Operation { get; set; }
+        public string Operation { get; set; } = string.Empty;
 
         /** Threshold value for testing the condition */
         public float Threshold { get; set; }
+    }
+
+    /** 
+     * Container class for action requirements.
+     * This is primarily for file I/O with JSON serialization, as .NET 6
+     * does not support polymorphic serialization :(
+     */
+    public class RequirementContainer
+    {
+        /** Location requirements in the container */
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonPropertyName("Location Requirements")]
+        public HashSet<RLocation>? Locations { get; set; }
+
+        /** People requirements in the container */
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonPropertyName("People Requirements")]
+        public HashSet<RPeople>? People { get; set; }
+
+        /** Motive requirements in the container */
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonPropertyName("Motive Requirements")]
+        public HashSet<RMotive>? Motives { get; set; }
+
+        /** Add an arbitrary requirement to the container */
+        public void AddRequirement(Requirement req)
+        {
+            if (req is RLocation rl)
+            {
+                Locations ??= new HashSet<RLocation>();
+                Locations.Add(rl);
+            }
+            else if (req is RPeople rp)
+            {
+                People ??= new HashSet<RPeople>();
+                People.Add(rp);
+            }
+            else if (req is RMotive rm)
+            {
+                Motives ??= new HashSet<RMotive>();
+                Motives.Add(rm);
+            }
+        }
+
+        /** Get a set of all requirements in the container */
+        public HashSet<Requirement> GetAll()
+        {
+            HashSet<Requirement> reqs = new();
+            if (Locations != null) reqs.UnionWith(Locations);
+            if (People != null) reqs.UnionWith(People);
+            if (Motives != null) reqs.UnionWith(Motives);
+            return reqs;
+        }
     }
 }

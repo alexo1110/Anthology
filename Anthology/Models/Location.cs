@@ -1,7 +1,12 @@
-﻿namespace Anthology.Models
+﻿using System.Text.Json.Serialization;
+
+namespace Anthology.Models
 {
     public class SimLocation
     {
+        /** optional name of the location. Eg. Restaurant, Home, Movie Theatre, etc */
+        public string Name { get; set; } = string.Empty;
+
         /** x-coordinate of the location */
         public int X { get; set; }
 
@@ -11,16 +16,14 @@
         /** optional set of tags associated with the location. Eg. Restaurant could have 'food', 'delivery' as tags */
         public HashSet<string> Tags { get; set; } = new HashSet<String>();
 
-        /** optional name of the location. Eg. Restaurant, Home, Movie Theatre, etc */
-        public string Name { get; set; } = string.Empty;
-
         /** set of agents at the location */
-        public HashSet<Agent> AgentsPresent { get; set; } = new HashSet<Agent>();
+        [JsonIgnore]
+        public HashSet<string> AgentsPresent { get; set; } = new HashSet<string>();
 
         /** returns true if the specified agent is at this location */
         public bool IsAgentHere(Agent npc)
         {
-            return AgentsPresent.Contains(npc);
+            return AgentsPresent.Contains(npc.Name);
         }
 
         /** checks if this location satisfies all of the passed location requirements */
@@ -72,13 +75,13 @@
         }
 
         /** checks if this location satifies the SpecificPeoplePresent requirement */
-        private bool SpecificPeoplePresent(HashSet<Agent> specificPeoplePresent)
+        private bool SpecificPeoplePresent(HashSet<string> specificPeoplePresent)
         {
             return specificPeoplePresent.IsSubsetOf(AgentsPresent);
         }
 
         /** checks if this location satisfies the SpecificPeopleAbsent requirement */
-        private bool SpecificPeopleAbsent(HashSet<Agent> specificPeopleAbsent)
+        private bool SpecificPeopleAbsent(HashSet<string> specificPeopleAbsent)
         {
             return !specificPeopleAbsent.Overlaps(AgentsPresent);
         }
@@ -87,9 +90,9 @@
         private bool RelationshipsPresent(HashSet<string> relationshipsPresent)
         {
             HashSet<string> relationshipsHere = new();
-            foreach (Agent a in AgentsPresent)
+            foreach (string name in AgentsPresent)
             {
-                HashSet<Relationship> ar = a.Relationships;
+                HashSet<Relationship> ar = AgentManager.GetAgentByName(name).Relationships;
                 foreach (Relationship r in ar)
                 {
                     relationshipsHere.Add(r.Type);
