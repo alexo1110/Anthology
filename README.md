@@ -14,6 +14,21 @@ You can also build by opening the terminal in Visual Studio and running the comm
 Run the application via Start Debugging. Visual Studio will build the application before debugging
 if there was no previous build done or if the solution was cleaned.
 
+## Usage
+As of now, there is no GUI implementation (the default index page is simply a deception right now, sorry). To interaction with the simulation, please adhere to the following:
+
+### Editing the start state
+- Actions are read from /Data/Actions.json. Location and People requirements are both stored as collections, although the current implementation only expects one requirement of these types, so any additional ones will simply be ignored.
+- Agents are read from /Data/Agents.json, so any changes to the simulation's agents should be made here and adhere to the existing format.
+- Locations are read from /Data/Locations.json. There is currently no support for multiple locations occupying the same coordinates.
+
+### Running and view the simulation's state
+Due to the lack of a GUI, for simplicity's sake all interactions are performed with the following route mappings:
+- **/Action/Print** displays all actions in the simulation
+- **/Agent/Print** displays all agents in the simulation
+- **/Location/Print** displays all locations in the simulation
+- **/TempSim/Step/{n}** runs *n* iterations of the simulation, and displays all updated agent states. In addition, various higher resolution events such as action selection are logged in the command console.
+
 # Dependencies
 - Microsoft.NETCore
 - Microsoft.AspNetCore
