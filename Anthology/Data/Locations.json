@@ -1,22 +1,36 @@
 [
   {
-    "Name": "Pub",
-    "X": 3,
-    "Y": 4,
+    "Name": "Dining Hall",
+    "X": 5,
+    "Y": 5,
     "Tags": [
-      "food",
-      "drink"
+      "restaurant"
     ]
   },
   {
-    "Name": "Grocery Store",
-    "X": 5,
+    "Name": "Greenway",
+    "X": 1,
+    "Y": 2,
+    "Tags": [
+      "outdoor"
+    ]
+  },
+  {
+    "Name": "Math Hall",
+    "X": 1,
+    "Y": 1,
+    "Tags": [
+      "classroom",
+      "math"
+    ]
+  },
+  {
+    "Name": "Physics Hall",
+    "X": 1,
     "Y": 3,
     "Tags": [
-      "food",
-      "store",
-      "groceries",
-      "pharmacy"
+      "classroom",
+      "physics"
     ]
   }
 ]

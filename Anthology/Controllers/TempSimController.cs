@@ -11,10 +11,14 @@ namespace Anthology.Controllers
         }
 
         // GET: /TempSim/Step/
-        public string Step()
+        public string Step(int id)
         {
-            ExecutionManager.RunSim();
-            return "Time: " + World.Time;
+            for (int i = 0; i < id; i++)
+            {
+                ExecutionManager.RunSim();
+            }
+            string state = "Time: " + World.Time + "\n\n" + AgentManager.SerializeAllAgents();
+            return state;
         }
     }
 }
