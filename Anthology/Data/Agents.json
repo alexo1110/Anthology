@@ -99,8 +99,8 @@
     "YLocation": 1,
     "OccupiedCounter": 0,
     "CurrentAction": "wait_action",
-    "XDestination": 5,
-    "YDestination": 5,
+    "XDestination": -1,
+    "YDestination": -1,
     "CurrentTargets": [],
     "Relationships": []
   },
@@ -117,8 +117,8 @@
     "YLocation": 3,
     "OccupiedCounter": 0,
     "CurrentAction": "wait_action",
-    "XDestination": 5,
-    "YDestination": 5,
+    "XDestination": -1,
+    "YDestination": -1,
     "CurrentTargets": [],
     "Relationships": []
   }

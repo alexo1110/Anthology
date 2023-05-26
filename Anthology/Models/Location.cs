@@ -53,19 +53,21 @@ namespace Anthology.Models
         /** checks if this location satisfies the HasOneOrMOreOf requirement */
         private bool HasOneOrMoreOf(HashSet<string> hasOneOrMoreOf)
         {
+            if (hasOneOrMoreOf.Count == 0) { return true; }
             return hasOneOrMoreOf.Overlaps(Tags);
         }
 
         /** checks if this location satisfies the HasNoneOf requirement */
         private bool HasNoneOf(HashSet<string> hasNoneOf)
         {
+            if (hasNoneOf.Count == 0) { return true; }
             return !hasNoneOf.Overlaps(Tags);
         }
 
-        /** checks if this location satifies the MinNumPeople requirement */
+        /** checks if this location satisfies the MinNumPeople requirement */
         private bool HasMinNumPeople(short minNumPeople)
         {
-            return minNumPeople < AgentsPresent.Count;
+            return minNumPeople <= AgentsPresent.Count;
         }
 
         /** checks if this location satifies the MaxNumPeople requirement */
@@ -77,28 +79,33 @@ namespace Anthology.Models
         /** checks if this location satifies the SpecificPeoplePresent requirement */
         private bool SpecificPeoplePresent(HashSet<string> specificPeoplePresent)
         {
+            if (specificPeoplePresent.Count == 0) { return true; }
             return specificPeoplePresent.IsSubsetOf(AgentsPresent);
         }
 
         /** checks if this location satisfies the SpecificPeopleAbsent requirement */
         private bool SpecificPeopleAbsent(HashSet<string> specificPeopleAbsent)
         {
+            if (specificPeopleAbsent.Count == 0) { return true; }
             return !specificPeopleAbsent.Overlaps(AgentsPresent);
         }
 
         /** checks if this location satifies the RelationshipsPresent requirement */
         private bool RelationshipsPresent(HashSet<string> relationshipsPresent)
         {
+            if (relationshipsPresent.Count == 0) { return true; }
             HashSet<string> relationshipsHere = new();
             foreach (string name in AgentsPresent)
             {
                 HashSet<Relationship> ar = AgentManager.GetAgentByName(name).Relationships;
                 foreach (Relationship r in ar)
                 {
-                    relationshipsHere.Add(r.Type);
+                    if (AgentsPresent.Contains(r.With))
+                    {
+                        relationshipsHere.Add(r.Type);
+                    }
                 }
             }
-
             return relationshipsPresent.IsSubsetOf(relationshipsHere);
         }
     }

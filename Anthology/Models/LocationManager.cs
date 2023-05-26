@@ -57,11 +57,21 @@ namespace Anthology.Models
          * Returns a set of locations that match the HasAllOf, HasOneOrMOreOf, and HasNoneOf constraints
          * Returns all the locations that satisfied the given requirement, or an empty set is none match.
          */
-        public static HashSet<SimLocation> LocationsSatisfyingLocationRequirement(HashSet<SimLocation> locations, RLocation requirements)
+        public static HashSet<SimLocation> LocationsSatisfyingLocationRequirement(HashSet<SimLocation> locations, RLocation requirements, string agent = "")
         {
             bool IsLocationInvalid(SimLocation location)
-            {
-                return !location.SatisfiesRequirements(requirements);
+            {   
+                if (agent == "" || location.AgentsPresent.Contains(agent))
+                {
+                    return !location.SatisfiesRequirements(requirements);
+                }
+                else
+                {
+                    location.AgentsPresent.Add(agent);
+                    bool invalid = !location.SatisfiesRequirements(requirements);
+                    location.AgentsPresent.Remove(agent);
+                    return invalid;
+                }
             }
 
             HashSet<SimLocation> satisfactoryLocations = new();
@@ -77,11 +87,21 @@ namespace Anthology.Models
          * RelationshipsPresent, and RelationshipsAbsent requirements
          * Returns all the locations that satisfied the given requirement, or an empty set is none match.
          */
-        public static HashSet<SimLocation> LocationsSatisfyingPeopleRequirement(HashSet<SimLocation> locations, RPeople requirements)
+        public static HashSet<SimLocation> LocationsSatisfyingPeopleRequirement(HashSet<SimLocation> locations, RPeople requirements, string agent = "")
         {
             bool IsLocationInvalid(SimLocation location)
             {
-                return !location.SatisfiesRequirements(requirements);
+                if (agent == "" || location.AgentsPresent.Contains(agent))
+                {
+                    return !location.SatisfiesRequirements(requirements);
+                }
+                else
+                {
+                    location.AgentsPresent.Add(agent);
+                    bool invalid = !location.SatisfiesRequirements(requirements);
+                    location.AgentsPresent.Remove(agent);
+                    return invalid;
+                }
             }
 
             HashSet<SimLocation> satisfactoryLocations = new();
@@ -139,7 +159,7 @@ namespace Anthology.Models
             }
             HashSet<SimLocation> locationsToCheck = new();
             locationsToCheck.UnionWith(locations);
-            locationsToCheck.RemoveWhere(IsSameLocation);
+            // locationsToCheck.RemoveWhere(IsSameLocation);
 
             if (locationsToCheck.Count == 0) return null;
 

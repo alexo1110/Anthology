@@ -237,14 +237,17 @@ namespace Anthology.Models
                     }
                     else if (deltaUtility > maxDeltaUtility)
                     {
+                        maxDeltaUtility = deltaUtility;
                         currentChoice.Clear();
                         currentDest.Clear();
                         currentChoice.Add(action);
                         currentDest.Add(nearestLocation);
                     }
-
-                    actionSelectLog.Add("Current Choice: " + currentChoice.First().Name);
-                    actionSelectLog.Add("Current Destination: " + currentDest.First().Name);
+                    if (currentChoice.Count > 0)
+                    {
+                        actionSelectLog.Add("Current Choice: " + currentChoice.First().Name);
+                        actionSelectLog.Add("Current Destination: " + currentDest.First().Name);
+                    }
                 }
             }
             Console.WriteLine(JsonSerializer.Serialize(actionSelectLog, UI.Jso));
