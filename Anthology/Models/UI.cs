@@ -1,7 +1,16 @@
-﻿namespace Anthology.Models
+﻿using System.Text.Json;
+
+namespace Anthology.Models
 {
     public static class UI
     {
+        /** Json serializer options for file I/O */
+        public static JsonSerializerOptions Jso { get; } = new()
+        {
+            Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+            WriteIndented = true
+        };
+
         /** the size of the UI grid (n x n) */
         public static int GridSize { get; set; } = 6;
 

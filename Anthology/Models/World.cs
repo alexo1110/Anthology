@@ -5,15 +5,13 @@
         /** World time, or ticks */
         public static int Time { get; set; } = 0;
 
-
-
         /** Initialize/reset all static world variables */
         public static void Init()
         {
             Time = 0;
             ActionManager.Init();
             AgentManager.Init();
-            LocationManager.Init();
+            LocationManager.Init(UI.GridSize);
         }
 
         /** Increment simulation time by one tick */
