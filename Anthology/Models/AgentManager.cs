@@ -8,9 +8,10 @@ namespace Anthology.Models
         public static HashSet<Agent> Agents { get; set; } = new HashSet<Agent>();
 
         /** Initialize/reset all agent manager variables */
-        public static void Init()
+        public static void Init(string path)
         {
             Agents.Clear();
+            LoadAgentsFromFile(path);
         }
 
         /** Gets the agent in the simulation with the matching name */

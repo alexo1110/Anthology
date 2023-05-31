@@ -12,7 +12,7 @@ namespace Anthology.Models
         public static Dictionary<int, Dictionary<int, SimLocation>> LocationGrid { get; set; } = new Dictionary<int, Dictionary<int, SimLocation>>();
 
         /** Initialize/reset all static location manager variables and fill an empty N x N grid */
-        public static void Init(int n)
+        public static void Init(int n, string path)
         {
             LocationSet.Clear();
             LocationGrid.Clear();
@@ -24,6 +24,7 @@ namespace Anthology.Models
                     LocationGrid[i][k] = new SimLocation();
                 }
             }
+            LoadLocationsFromFile(path);
         }
 
         /** Add a location to both the location set and the location grid */
@@ -153,13 +154,8 @@ namespace Anthology.Models
         /** Helper function that finds the location nearest to the given (X,Y) coordinate */
         private static SimLocation? FindNearestLocationXY(HashSet<SimLocation> locations, int x, int y)
         {
-            bool IsSameLocation(SimLocation loc)
-            {
-                return loc.X == x && loc.Y == y;
-            }
             HashSet<SimLocation> locationsToCheck = new();
             locationsToCheck.UnionWith(locations);
-            // locationsToCheck.RemoveWhere(IsSameLocation);
 
             if (locationsToCheck.Count == 0) return null;
 

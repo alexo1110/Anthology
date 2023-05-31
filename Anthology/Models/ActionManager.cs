@@ -8,10 +8,11 @@ namespace Anthology.Models
         public static ActionContainer Actions { get; set; } = new();
 
         /** Initialize/reset all action manager variables */
-        public static void Init()
+        public static void Init(string path)
         {
             Actions.ScheduleActions.Clear();
             Actions.PrimaryActions.Clear();
+            LoadActionsFromFile(path);
         }
 
         /** Retrieves an action with the specified name from the set of actions available in the simulation */

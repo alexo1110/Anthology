@@ -15,10 +15,7 @@ namespace Anthology.Controllers
 
         public IActionResult Index()
         {
-            ExecutionManager.Init();
-            ActionManager.LoadActionsFromFile("Data\\Actions.json");
-            AgentManager.LoadAgentsFromFile("Data\\Agents.json");
-            LocationManager.LoadLocationsFromFile("Data\\Locations.json");
+            ExecutionManager.Init("Data\\Paths.json");
             return View();
         }
 
