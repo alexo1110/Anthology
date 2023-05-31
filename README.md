@@ -8,11 +8,11 @@ A C# translation for Anthology: a social simulation framework originally written
 ## Build
 Open the .sln file in Visual Studio. In the Build tab, click on Build Solution.
 This will build the solution with the default configuration Debug|Any CPU.
-You can also build by opening the terminal in Visual Studio and running the command ``` dotnet build ```. 
+You can also build by opening the terminal and running the command ``` dotnet build ``` relative to root directory. 
 
 ## Run
-Run the application via Start Debugging. Visual Studio will build the application before debugging
-if there was no previous build done or if the solution was cleaned.
+In Visual Studio, run the application via Start Debugging. Visual Studio will build the application before debugging
+if there was no previous build done or if the solution was cleaned. You can also run by opening the terminal and running the command ``` dotnet run --project Anthology ``` relative to root directory. 
 
 ## Usage
 As of now, there is no GUI implementation (the default index page is simply a deception right now, sorry). To interaction with the simulation, please adhere to the following:
