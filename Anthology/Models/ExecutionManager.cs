@@ -1,34 +1,43 @@
-﻿namespace Anthology.Models
+﻿using System.Text.Json;
+
+namespace Anthology.Models
 {
     public static class ExecutionManager
     {
         /** Initializes the simulation, delegates to World.Init() */
-        public static void Init()
+        public static void Init(string pathToFiles)
         {
-            World.Init();
+            using FileStream os = File.OpenRead(pathToFiles);
+            Dictionary<string, string>? filePaths = JsonSerializer.Deserialize<Dictionary<string, string>>(os, UI.Jso);
+            if (filePaths == null || filePaths.Count < 3) return;
+            World.Init(filePaths["Actions"], filePaths["Agents"], filePaths["Locations"]);
         }
 
         /**
          * Executes a turn for each agent every tick.
          * Executes a single turn and then must be called again
          */
-        public static void RunSim()
+        public static void RunSim(int steps = 1)
         {
-            bool movement = false;
-            
-            if (ToContinue())
+            bool movement;
+            for (int i = 0; i < steps; i++)
             {
-                foreach(Agent agent in AgentManager.Agents)
+                movement = false;
+                if (ToContinue())
                 {
-                    bool turnMove = Turn(agent);
-                    movement = movement || turnMove;
+                    foreach (Agent agent in AgentManager.Agents)
+                    {
+                        bool turnMove = Turn(agent);
+                        movement = movement || turnMove;
+                    }
+                    World.IncrementTime();
+                    UI.Update();
                 }
-                World.IncrementTime();
-                UI.Update();
-            }
-            else if (!UI.Paused)
-            {
-                Console.WriteLine("Simulation ended.");
+                else if (!UI.Paused)
+                {
+                    Console.WriteLine("Simulation ended.");
+                    break;
+                }
             }
         }
 

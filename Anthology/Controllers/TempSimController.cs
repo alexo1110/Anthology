@@ -13,10 +13,7 @@ namespace Anthology.Controllers
         // GET: /TempSim/Step/
         public string Step(int id)
         {
-            for (int i = 0; i < id; i++)
-            {
-                ExecutionManager.RunSim();
-            }
+            ExecutionManager.RunSim(id);
             string state = "Time: " + World.Time + "\n\n" + AgentManager.SerializeAllAgents();
             return state;
         }
