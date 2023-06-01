@@ -1,4 +1,4 @@
-﻿namespace Anthology.SimManager
+﻿namespace Anthology.SimulationManager
 {
     public class Action
     {

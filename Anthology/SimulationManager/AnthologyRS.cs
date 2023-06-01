@@ -1,6 +1,6 @@
 ﻿using Anthology.Models;
 
-namespace Anthology.SimManager
+namespace Anthology.SimulationManager
 {
     public class AnthologyRS : RealitySim
     {
@@ -15,12 +15,13 @@ namespace Anthology.SimManager
             HashSet<Agent> agents = AgentManager.Agents;
             foreach (Agent a in agents)
             {
-                if (!npcs.ContainsKey(a.Name)) { npcs[a.Name] = new NPC(); }
-                NPC currentNpc = npcs[a.Name];
-                currentNpc.Name = a.Name;
-                currentNpc.Coordinates.X = a.XLocation;
-                currentNpc.Coordinates.Y = a.YLocation;
-                currentNpc.CurrentAction.Name = a.CurrentAction.First().Name;
+                NPC npc = null;
+                if(!npcs.TryGetValue(a.Name, out npc))
+                    npc = new NPC();
+                npc.Name = a.Name;
+                npc.Coordinates.X = a.XLocation;
+                npc.Coordinates.Y = a.YLocation;
+                npc.CurrentAction.Name = a.CurrentAction?.First().Name;
             }
         }
 

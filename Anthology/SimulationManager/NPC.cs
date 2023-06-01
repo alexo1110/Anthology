@@ -1,6 +1,6 @@
 ﻿using System.Numerics;
 
-namespace Anthology.SimManager
+namespace Anthology.SimulationManager
 {
     public class NPC
     {
@@ -12,6 +12,9 @@ namespace Anthology.SimManager
         public Action CurrentAction { get; set; } = null;
         public byte[] Knowledge { get; set; } = null;
 
-        
+        public NPC()
+        {
+            CurrentAction = new Action();
+        }
     }
 }

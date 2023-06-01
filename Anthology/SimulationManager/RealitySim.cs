@@ -1,4 +1,4 @@
-﻿namespace Anthology.SimManager
+﻿namespace Anthology.SimulationManager
 {
     public abstract class RealitySim
     {

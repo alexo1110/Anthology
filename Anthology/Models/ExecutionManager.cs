@@ -7,9 +7,10 @@ namespace Anthology.Models
         /** Initializes the simulation, delegates to World.Init() */
         public static void Init(string pathToFiles)
         {
-            Dictionary<string, string>? filePaths = JsonSerializer.Deserialize<Dictionary<string, string>>(pathToFiles, UI.Jso);
+            using FileStream os = File.OpenRead(pathToFiles);
+            Dictionary<string, string>? filePaths = JsonSerializer.Deserialize<Dictionary<string, string>>(os, UI.Jso);
             if (filePaths == null || filePaths.Count < 3) return;
-            World.Init(filePaths["Actions"], filePaths["Agent"], filePaths["Locations"]);
+            World.Init(filePaths["Actions"], filePaths["Agents"], filePaths["Locations"]);
         }
 
         /**

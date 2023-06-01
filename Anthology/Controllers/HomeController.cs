@@ -1,6 +1,7 @@
 ﻿using Anthology.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using Anthology.SimulationManager;
 
 namespace Anthology.Controllers
 {
@@ -15,7 +16,7 @@ namespace Anthology.Controllers
 
         public IActionResult Index()
         {
-            ExecutionManager.Init("Data\\Paths.json");
+            SimManager.Init("Data\\Paths.json", typeof(AnthologyRS), typeof(LyraKS));
             return View();
         }
 

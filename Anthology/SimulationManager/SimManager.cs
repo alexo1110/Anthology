@@ -1,12 +1,10 @@
-﻿using Anthology.Models;
-
-namespace Anthology.SimManager
+﻿namespace Anthology.SimulationManager
 {
     public static class SimManager
     {
         public static Dictionary<string, NPC> NPCs = new();
 
-        public static RealitySim? Reality { get; set; }
+        public static RealitySim? Reality { get; set; } 
 
         public static KnowledgeSim? Knowledge { get; set; }
 
@@ -53,10 +51,10 @@ namespace Anthology.SimManager
             }
         }
 
-        public static NPC GetNPCByUUID(uint uuid)
-        {
-            return NPCs[uuid];
-        }
+        //public static NPC GetNPCByUUID(uint uuid)
+        //{
+        //    return NPCs[uuid];
+        //}
 
         public static void PushUpdatedNpc(NPC npc)
         {
