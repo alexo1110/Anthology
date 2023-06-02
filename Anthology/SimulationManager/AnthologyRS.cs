@@ -21,7 +21,8 @@ namespace Anthology.SimulationManager
                 npc.Name = a.Name;
                 npc.Coordinates.X = a.XLocation;
                 npc.Coordinates.Y = a.YLocation;
-                npc.CurrentAction.Name = a.CurrentAction?.First().Name;
+                npc.CurrentAction.Name = a.CurrentAction.First()?.Name;
+                npcs[a.Name] = npc;
             }
         }
 
@@ -30,7 +31,8 @@ namespace Anthology.SimulationManager
             Agent agent = AgentManager.GetAgentByName(npc.Name);
             npc.Coordinates.X = agent.XLocation;
             npc.Coordinates.Y = agent.YLocation;
-            npc.CurrentAction.Name = agent.CurrentAction.First().Name;
+            if (agent.CurrentAction.Count > 0)
+                npc.CurrentAction.Name = agent.CurrentAction.First().Name;
         }
 
         public override void PushUpdatedNpc(NPC npc)
