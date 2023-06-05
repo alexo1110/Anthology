@@ -28,6 +28,9 @@ namespace Anthology.SimulationManager
         /** Data representing the knowledge/beliefs/opinions of the NPC */
         public byte[] Knowledge { get; set; } = { };
 
+        /** Whether or not this NPC has been modified and needs to have its update pushed */
+        public bool Dirty { get; set; } = false;
+
         /**
          * Gets a string representation of the NPC, in the following format:
          * 

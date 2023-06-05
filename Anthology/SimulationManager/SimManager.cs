@@ -95,8 +95,12 @@ namespace Anthology.SimulationManager
          */
         public static void PushUpdatedNpc(NPC npc)
         {
-            Reality?.PushUpdatedNpc(npc);
-            Knowledge?.PushUpdatedNpc(npc);
+            if (npc.Dirty)
+            {
+                Reality?.PushUpdatedNpc(npc);
+                Knowledge?.PushUpdatedNpc(npc);
+                npc.Dirty = false;
+            }
         }
     }
 }
