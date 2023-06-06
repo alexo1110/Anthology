@@ -10,23 +10,48 @@ namespace Anthology.SimulationManager
    */
   public class NPC
   {
-        /** The name of the NPC */      
-        public string Name { get; set; } = string.Empty;
-        
+        /** The name of the NPC */
+        private string name = string.Empty;
+        public string Name
+        {
+            get { return name; }
+            set { Dirty = true; name = value; }
+        }
+
         /** 
          * The GUID of the NPC
          * (Might be unused)
          */
-        public uint Guid { get; set; }
+        private Guid id;
+        public Guid ID
+        {
+            get { return id; }
+            set { Dirty = true; id = value; }
+        }
 
         /** The (X,Y) coordinate location of the NPC */
-        public Vector2 Coordinates;
+        private Vector2 coordinates;
+        public Vector2 Coordinates
+        {
+            get { return coordinates; }
+            set { Dirty = true; coordinates = value; }
+        }
 
         /** The action current being performed by the NPC */
-        public Action CurrentAction { get; set; } = new();
+        private Action currentAction = new(); 
+        public Action CurrentAction
+        {
+            get { return currentAction; }
+            set { Dirty = true; currentAction = value; }
+        }
 
         /** Data representing the knowledge/beliefs/opinions of the NPC */
-        public byte[] Knowledge { get; set; } = { };
+        private byte[] knowledge { get; set; } = { };
+        public byte[] Knowledge
+        {
+            get { return knowledge; }
+            set { Dirty = true; knowledge = value; }
+        }
 
         /** Whether or not this NPC has been modified and needs to have its update pushed */
         public bool Dirty { get; set; } = false;
