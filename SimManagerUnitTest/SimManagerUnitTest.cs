@@ -32,7 +32,7 @@ namespace SimManagerUnitTest
         public void TestReality()
         {
             Dictionary<string, NPC> npcs = new Dictionary<string, NPC>();
-            SimManager.Reality.LoadNpcs(npcs);
+            SimManager.Reality?.LoadNpcs(npcs);
             Assert.IsTrue(npcs.Count > 0);
             Assert.IsTrue(npcs.ContainsKey("Norma"));
             Assert.IsTrue(npcs.ContainsKey("Abnorma"));
@@ -43,7 +43,7 @@ namespace SimManagerUnitTest
             {
                 NPC npc = new NPC();
                 npc.Name = "Norma";
-                SimManager.Reality.UpdateNpc(npc);
+                SimManager.Reality?.UpdateNpc(npc);
                 Assert.AreEqual(npc.Name, "Norma");
                 Assert.AreEqual(npc.CurrentAction.Name, "wait_action");
             }

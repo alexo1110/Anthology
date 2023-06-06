@@ -31,10 +31,9 @@ namespace Anthology.SimulationManager
 
         /** The (X,Y) coordinate location of the NPC */
         private Vector2 coordinates;
-        public Vector2 Coordinates
+        public ref Vector2 Coordinates
         {
-            get { return coordinates; }
-            set { Dirty = true; coordinates = value; }
+            get { Dirty = true; return ref coordinates; }
         }
 
         /** The action current being performed by the NPC */
