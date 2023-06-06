@@ -19,26 +19,22 @@ namespace Anthology.Models
          */
         public static void RunSim(int steps = 1)
         {
-            bool movement;
             for (int i = 0; i < steps; i++)
             {
-                movement = false;
                 if (ToContinue())
                 {
                     foreach (Agent agent in AgentManager.Agents)
-                    {
-                        bool turnMove = Turn(agent);
-                        movement = movement || turnMove;
-                    }
+                        Turn(agent);
+
                     World.IncrementTime();
-                    UI.Update();
                 }
-                else if (!UI.Paused)
+                else if(!UI.Paused)
                 {
                     Console.WriteLine("Simulation ended.");
-                    break;
                 }
             }
+
+            UI.Update();
         }
 
         /**
