@@ -32,35 +32,27 @@ namespace Anthology.SimulationManager
          */
         public static void Init(string JSONfile, Type reality, Type knowledge)
         {
-            try
+            if (reality.IsSubclassOf(typeof(RealitySim)))
             {
-                if (reality.IsSubclassOf(typeof(RealitySim)))
-                {
-                    Reality = Activator.CreateInstance(reality) as RealitySim;
-                    if (Reality == null)
-                        throw new NullReferenceException("Could not create reality sim");
-                    Reality.Init(JSONfile);
-                    Reality.LoadNpcs(NPCs);
-                }
-                else
-                    throw new InvalidCastException("Failed to recognize reality sim type");
-                if (knowledge.IsSubclassOf(typeof(KnowledgeSim)))
-                {
-                    Knowledge = Activator.CreateInstance(knowledge) as KnowledgeSim;
-                    if (Knowledge == null)
-                        throw new NullReferenceException("Could not create knowledge sim");
-                    Knowledge?.Init(JSONfile);
-                    Knowledge?.LoadNpcs(NPCs);
-                    NumIterations = 0;
-                }
-                else
-                    throw new InvalidCastException("Failed to recognize knowledge sim type");
+                Reality = Activator.CreateInstance(reality) as RealitySim;
+                if (Reality == null)
+                    throw new NullReferenceException("Could not create reality sim");
+                Reality.Init(JSONfile);
+                Reality.LoadNpcs(NPCs);
             }
-            catch(Exception e)
+            else
+                throw new InvalidCastException("Failed to recognize reality sim type");
+            if (knowledge.IsSubclassOf(typeof(KnowledgeSim)))
             {
-                Console.WriteLine(e.Message);
+                Knowledge = Activator.CreateInstance(knowledge) as KnowledgeSim;
+                if (Knowledge == null)
+                    throw new NullReferenceException("Could not create knowledge sim");
+                Knowledge?.Init(JSONfile);
+                Knowledge?.LoadNpcs(NPCs);
+                NumIterations = 0;
             }
-
+            else
+                throw new InvalidCastException("Failed to recognize knowledge sim type");
         }
 
         /**
