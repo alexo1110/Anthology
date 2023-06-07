@@ -1,5 +1,4 @@
 ﻿using Anthology.Models;
-using System.Collections.ObjectModel;
 using System.Numerics;
 
 namespace Anthology.SimulationManager

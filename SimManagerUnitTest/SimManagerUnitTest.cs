@@ -72,5 +72,15 @@ namespace SimManagerUnitTest
             Assert.AreEqual("Physics Hall", locations[new Vector2(1, 3)].Name);
             Assert.IsTrue(locations[new Vector2(1, 2)].Tags.Contains("outdoor"));
         }
+
+        [TestMethod]
+        public void TestIterations()
+        {
+            Assert.AreEqual("wait_action", SimManager.NPCs["Norma"].CurrentAction.Name);
+            SimManager.GetIteration();
+            Assert.AreEqual("travel_action", SimManager.NPCs["Norma"].CurrentAction.Name);
+            SimManager.GetIteration(20);
+            Assert.AreNotEqual("travel_action", SimManager.NPCs["Norma"].CurrentAction.Name);
+        }
     }
 }
