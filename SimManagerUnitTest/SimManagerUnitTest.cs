@@ -41,6 +41,17 @@ namespace SimManagerUnitTest
             Assert.IsTrue(npcs.ContainsKey("Quentin"));
             Assert.IsTrue(npcs.ContainsKey("MathProf"));
             Assert.IsTrue(npcs.ContainsKey("PhysicsProf"));
+            Assert.IsTrue(npcs["Norma"].Motives.Count > 0);
+            Assert.IsTrue(npcs["Norma"].Motives.ContainsKey("accomplishment"));
+            Assert.IsTrue(npcs["Norma"].Motives.ContainsKey("emotional"));
+            Assert.IsTrue(npcs["Norma"].Motives.ContainsKey("financial"));
+            Assert.IsTrue(npcs["Norma"].Motives.ContainsKey("social"));
+            Assert.IsTrue(npcs["Norma"].Motives.ContainsKey("physical"));
+            Assert.AreEqual(2, npcs["Norma"].Motives["accomplishment"]);
+            Assert.AreEqual(3, npcs["Norma"].Motives["emotional"]);
+            Assert.AreEqual(5, npcs["Norma"].Motives["financial"]);
+            Assert.AreEqual(1, npcs["Norma"].Motives["social"]);
+            Assert.AreEqual(4, npcs["Norma"].Motives["physical"]);
 
             {
                 NPC npc = new() { Name = "Norma" };

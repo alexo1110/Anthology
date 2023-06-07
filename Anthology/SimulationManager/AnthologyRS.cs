@@ -1,4 +1,5 @@
 ﻿using Anthology.Models;
+using System.Collections.ObjectModel;
 using System.Numerics;
 
 namespace Anthology.SimulationManager
@@ -24,6 +25,11 @@ namespace Anthology.SimulationManager
                 if (a.CurrentAction != null && a.CurrentAction.Count > 0)
                 {
                     npc.CurrentAction.Name = a.CurrentAction.First().Name;
+                }
+                Dictionary<string, Motive> motives = a.Motives;
+                foreach (string mote in motives.Keys)
+                {
+                    npc.Motives[mote] = motives[mote].Amount;
                 }
                 npcs[a.Name] = npc;
             }
@@ -51,6 +57,11 @@ namespace Anthology.SimulationManager
             Agent agent = AgentManager.GetAgentByName(npc.Name);
             npc.Coordinates.X = agent.XLocation;
             npc.Coordinates.Y = agent.YLocation;
+            Dictionary<string, Motive> motives = agent.Motives;
+            foreach (string mote in motives.Keys)
+            {
+                npc.Motives[mote] = motives[mote].Amount;
+            }
             if (agent.CurrentAction.Count > 0)
                 npc.CurrentAction.Name = agent.CurrentAction.First().Name;
         }
@@ -60,6 +71,11 @@ namespace Anthology.SimulationManager
             Agent agent = AgentManager.GetAgentByName(npc.Name);
             agent.XLocation = (int)npc.Coordinates.X;
             agent.YLocation = (int)npc.Coordinates.Y;
+            Dictionary<string, float> motives = npc.Motives;
+            foreach (string mote in motives.Keys)
+            {
+                agent.Motives[mote].Amount = motives[mote];
+            }
         }
 
         public override void Run(int steps = 1)
