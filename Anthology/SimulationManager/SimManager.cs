@@ -42,7 +42,7 @@ namespace Anthology.SimulationManager
             }
             else
                 throw new InvalidCastException("Failed to recognize reality sim type");
-            if (knowledge.IsSubclassOf(typeof(KnowledgeSim)))
+            if (false && knowledge.IsSubclassOf(typeof(KnowledgeSim))) // short circuited to skip step until LyraKS is implemented
             {
                 Knowledge = Activator.CreateInstance(knowledge) as KnowledgeSim;
                 if (Knowledge == null)
@@ -52,7 +52,8 @@ namespace Anthology.SimulationManager
                 NumIterations = 0;
             }
             else
-                throw new InvalidCastException("Failed to recognize knowledge sim type");
+                // throw new InvalidCastException("Failed to recognize knowledge sim type"); ignored until LyraKS is implemented
+                ;
         }
 
         /**

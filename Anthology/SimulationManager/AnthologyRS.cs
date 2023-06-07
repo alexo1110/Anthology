@@ -15,7 +15,7 @@ namespace Anthology.SimulationManager
             HashSet<Agent> agents = AgentManager.Agents;
             foreach (Agent a in agents)
             {
-                NPC npc = null;
+                NPC? npc = null;
                 if(!npcs.TryGetValue(a.Name, out npc))
                     npc = new NPC();
                 npc.Name = a.Name;
