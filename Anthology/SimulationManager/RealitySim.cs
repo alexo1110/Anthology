@@ -1,4 +1,6 @@
-﻿namespace Anthology.SimulationManager
+﻿using System.Numerics;
+
+namespace Anthology.SimulationManager
 {
     /** 
      * This class should be inherited from and implemented to use as a wrapper
@@ -12,6 +14,9 @@
 
         /** Used to populate the SimManager's collection of NPCs from the reality sim */
         public abstract void LoadNpcs(Dictionary<string, NPC> npcs);
+
+        /** Used to populate the SimManager's collection of Locations from the relaity sim */
+        public abstract void LoadLocations(Dictionary<Vector2, Location> locations);
 
         /** Updates the given NPC to match the reality sim's version */
         public abstract void UpdateNpc(NPC npc);

@@ -18,17 +18,6 @@ namespace Anthology.SimulationManager
             set { Dirty = true; name = value; }
         }
 
-        /** 
-         * The GUID of the NPC
-         * (Might be unused)
-         */
-        private Guid id;
-        public Guid ID
-        {
-            get { return id; }
-            set { Dirty = true; id = value; }
-        }
-
         /** The (X,Y) coordinate location of the NPC */
         private Vector2 coordinates;
         public ref Vector2 Coordinates
@@ -36,20 +25,28 @@ namespace Anthology.SimulationManager
             get { Dirty = true; return ref coordinates; }
         }
 
+        /** Data representing the knowledge/beliefs/opinions of the NPC */
+        private Dictionary<string, float> knowledge = new();
+        public Dictionary<string, float> Knowledge
+        {
+            get { return knowledge; }
+            set { Dirty = true; knowledge = value; }
+        }
+
+        /** Data representing the motivations/statuses of the NPC */
+        private Dictionary<string, float> motives = new();
+        public Dictionary<string, float> Motives
+        {
+            get { return motives; }
+            set { Dirty = true; motives = value; }
+        }
+
         /** The action current being performed by the NPC */
-        private Action currentAction = new(); 
+        private Action currentAction = new();
         public Action CurrentAction
         {
             get { return currentAction; }
             set { Dirty = true; currentAction = value; }
-        }
-
-        /** Data representing the knowledge/beliefs/opinions of the NPC */
-        private byte[] knowledge { get; set; } = { };
-        public byte[] Knowledge
-        {
-            get { return knowledge; }
-            set { Dirty = true; knowledge = value; }
         }
 
         /** Whether or not this NPC has been modified and needs to have its update pushed */
@@ -64,7 +61,7 @@ namespace Anthology.SimulationManager
          */
         public override string ToString()
         {
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new();
             sb.AppendFormat("Name: {0}, ", Name);
             sb.AppendFormat("X: {0}, Y: {1}, ", Coordinates.X, Coordinates.Y);
             sb.AppendFormat("Current Action: {0}", CurrentAction.Name);

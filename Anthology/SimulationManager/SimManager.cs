@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Numerics;
 
 namespace Anthology.SimulationManager
 {
@@ -10,7 +11,10 @@ namespace Anthology.SimulationManager
     public static class SimManager
     {
         /** Collection of NPCs coupled with data only pertinent to connecting simulations and the frontend */
-        public static Dictionary<string, NPC> NPCs = new();
+        public static Dictionary<string, NPC> NPCs { get; set; } = new();
+
+        /** Collection of Locations as they exist for use by the frontend and for synchronization with the simulations */
+        public static Dictionary<Vector2, Location> Locations { get; set; } = new();
 
         /** The simulation used for updating NPC actions, locations, and other physical traits */
         public static RealitySim? Reality { get; set; }
@@ -39,6 +43,7 @@ namespace Anthology.SimulationManager
                     throw new NullReferenceException("Could not create reality sim");
                 Reality.Init(JSONfile);
                 Reality.LoadNpcs(NPCs);
+                Reality.LoadLocations(Locations);
             }
             else
                 throw new InvalidCastException("Failed to recognize reality sim type");

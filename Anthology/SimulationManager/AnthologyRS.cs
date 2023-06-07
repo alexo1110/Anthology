@@ -1,4 +1,5 @@
 ﻿using Anthology.Models;
+using System.Numerics;
 
 namespace Anthology.SimulationManager
 {
@@ -15,14 +16,33 @@ namespace Anthology.SimulationManager
             HashSet<Agent> agents = AgentManager.Agents;
             foreach (Agent a in agents)
             {
-                NPC? npc = null;
-                if(!npcs.TryGetValue(a.Name, out npc))
+                if (!npcs.TryGetValue(a.Name, out NPC? npc))
                     npc = new NPC();
                 npc.Name = a.Name;
                 npc.Coordinates.X = a.XLocation;
                 npc.Coordinates.Y = a.YLocation;
-                npc.CurrentAction.Name = a.CurrentAction.First()?.Name;
+                if (a.CurrentAction != null && a.CurrentAction.Count > 0)
+                {
+                    npc.CurrentAction.Name = a.CurrentAction.First().Name;
+                }
                 npcs[a.Name] = npc;
+            }
+        }
+
+        public override void LoadLocations(Dictionary<Vector2, Location> locations)
+        {
+            locations.Clear();
+            HashSet<SimLocation> simLocations = LocationManager.LocationSet;
+            foreach(SimLocation s in simLocations)
+            {
+                Location loc = new()
+                {
+                    Name = s.Name,
+                    Coordinates = new(s.X, s.Y),
+                    Tags = new()
+                };
+                loc.Tags.UnionWith(s.Tags);
+                locations.Add(loc.Coordinates, loc);
             }
         }
 
