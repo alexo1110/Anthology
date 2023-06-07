@@ -1,41 +1,52 @@
-﻿namespace Anthology.Models
+﻿using System.Text.Json;
+
+namespace Anthology.Models
 {
     public static class ActionManager
     {
         /** Actions available in the simulation */
-        public static HashSet<Action> Actions { get; set; } = new HashSet<Action>();
-
-        /** The "wait_action", which is defaulted to when no other suitable action can be performed by an agent */
-        public static Action WaitAction { get; private set; } = new PrimaryAction();
-
-        /** The "travel_action", which is used to denote that an agent is currently traveling to a destination */
-        public static Action TravelAction { get; private set; } = new PrimaryAction();
+        public static ActionContainer Actions { get; set; } = new();
 
         /** Initialize/reset all action manager variables */
-        public static void Init()
+        public static void Init(string path)
         {
-            Actions.Clear();
-            WaitAction.Name = "wait_action";
-            TravelAction.Name = "travel_action";
+            Actions.ScheduleActions.Clear();
+            Actions.PrimaryActions.Clear();
+            LoadActionsFromFile(path);
         }
 
         /** Retrieves an action with the specified name from the set of actions available in the simulation */
-        public static Action? GetActionByName(string actionName)
+        public static Action GetActionByName(string actionName)
         {
             bool HasName(Action action)
             {
                 return action.Name == actionName;
             }
-            Action a = Actions.Where(HasName).First();
-            if (a != null) { return a; }
-            else { return null; }
+
+            Action action;
+            try
+            {
+                action = Actions.PrimaryActions.First(HasName);
+            }
+            catch (Exception)
+            {
+                try
+                {
+                    action = Actions.ScheduleActions.First(HasName);
+                }
+                catch (Exception)
+                {
+                    throw new Exception("Action with name: " + actionName + " cannot be found.");
+                }
+            }
+            return action;
         }
 
         /**
          * Returns the net effect for an action for a specific agent
          * Takes into account the agent's current motivation statuses
          */
-        public static float GetEffectDeltaForAgentAction(Agent agent, Action action)
+        public static float GetEffectDeltaForAgentAction(Agent agent, Action? action)
         {
             float deltaUtility = 0f;
 
@@ -51,10 +62,28 @@
             }
             else if (action is ScheduleAction sAction)
             {
-                return GetEffectDeltaForAgentAction(agent, sAction.InstigatorAction);
+                return GetEffectDeltaForAgentAction(agent, GetActionByName(sAction.InstigatorAction));
             }
 
             return deltaUtility;
+        }
+
+        /** Returns a JSON string representing the set of all actions in the simulation */
+        public static string SerializeAllActions()
+        {
+            return JsonSerializer.Serialize(Actions, UI.Jso);
+        }
+
+        /**
+         * Populates the set of actions in the simulation from the given file path
+         * If the given file cannot be read or is formatted incorrectly, an exception is thrown
+         */
+        public static void LoadActionsFromFile(string path)
+        {
+            string actionsText = File.ReadAllText(path);
+            ActionContainer? actions = JsonSerializer.Deserialize<ActionContainer>(actionsText, UI.Jso);
+            if (actions == null) return;
+            Actions = actions;
         }
     }
 }

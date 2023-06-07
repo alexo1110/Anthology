@@ -1,31 +1,40 @@
-﻿namespace Anthology.Models
+﻿using System.Text.Json;
+
+namespace Anthology.Models
 {
-    public class ExecutionManager
+    public static class ExecutionManager
     {
+        /** Initializes the simulation, delegates to World.Init() */
+        public static void Init(string pathToFiles)
+        {
+            using FileStream os = File.OpenRead(pathToFiles);
+            Dictionary<string, string>? filePaths = JsonSerializer.Deserialize<Dictionary<string, string>>(os, UI.Jso);
+            if (filePaths == null || filePaths.Count < 3) return;
+            World.Init(filePaths["Actions"], filePaths["Agents"], filePaths["Locations"]);
+        }
 
         /**
          * Executes a turn for each agent every tick.
          * Executes a single turn and then must be called again
          */
-        public void RunSim()
+        public static void RunSim(int steps = 1)
         {
-            bool movement = false;
-            
-            if (ToContinue())
+            for (int i = 0; i < steps; i++)
             {
-                foreach(Agent agent in AgentManager.Agents)
+                if (ToContinue())
                 {
-                    bool turnMove = Turn(agent);
-                    movement = movement || turnMove;
+                    foreach (Agent agent in AgentManager.Agents)
+                        Turn(agent);
+
+                    World.IncrementTime();
                 }
-                World.IncrementTime();
-                RoundWait(movement);
-                UI.Update();
+                else if(!UI.Paused)
+                {
+                    Console.WriteLine("Simulation ended.");
+                }
             }
-            else if (!UI.Paused)
-            {
-                Console.WriteLine("Simulation ended.");
-            }
+
+            UI.Update();
         }
 
         /**
@@ -33,7 +42,7 @@
          * First checks whether the stopping function for the simulation has been met.
          * Next checks if the user has paused the simulation
          */
-        public bool ToContinue()
+        public static bool ToContinue()
         {
             if (AgentManager.AllAgentsContent())
             {
@@ -50,33 +59,33 @@
          * Updates movement and occupation counters for an agent
          * May decrement the motives of an agent once every 10 hours. Chooses or executes an action when necessary.
          */
-        public bool Turn(Agent agent)
+        public static bool Turn(Agent agent)
         {
             bool movement = false;
-
+            Console.WriteLine(agent.Name);
             if (agent.OccupiedCounter > 0)
             {
                 agent.OccupiedCounter--;
 
-                if (agent.CurrentAction.First().Name == "travel_action" && agent.Destination != null)
+                if (agent.CurrentAction.First().Name == "travel_action" && agent.XDestination != -1)
                 {
                     movement = true;
                     agent.MoveCloserToDestination();
                 }
-                // If not travelling (i.e. arrived at destination), and end of occupied, execute planned action effects, select/start next.
-                else
+            }
+            // If not travelling (i.e. arrived at destination), and end of occupied, execute planned action effects, select/start next.
+            else
+            {
+                agent.ExecuteAction();
+                if (!agent.IsContent())
                 {
-                    agent.ExecuteAction();
-                    if (!agent.IsContent())
+                    if (agent.CurrentAction.Count == 0)
                     {
-                        if (agent.CurrentAction.Count == 0)
-                        {
-                            agent.SelectNextAction();
-                        }
-                        else
-                        {
-                            agent.StartAction();
-                        }
+                        agent.SelectNextAction();
+                    }
+                    else
+                    {
+                        agent.StartAction();
                     }
                 }
             }
@@ -87,29 +96,22 @@
          * Interrupts the agent from the current action they are performing.
          * Potential future implementation: Optionally add the interrupted action (with the remaining occupied counter) to the end of the action queue.
          */
-        public void Interrupt(Agent agent)
+        public static void Interrupt(Agent agent)
         {
             agent.OccupiedCounter = 0;
-            agent.Destination = null;
+            agent.XDestination = -1;
+            agent.YDestination = -1;
             Action interrupted = agent.CurrentAction.First();
             agent.CurrentAction.RemoveFirst();
             Console.WriteLine("Agent: " + agent.Name + " was interrupted from action: " + interrupted.Name);
         }
 
-        public void Interrupt(string agentName)
+        public static void Interrupt(string agentName)
         {
             Agent? agent = AgentManager.GetAgentByName(agentName);
             if (agent != null)
             {
                 Interrupt(agent);
-            }
-        }
-
-        public void RoundWait(bool movement)
-        {
-            if (movement)
-            {
-                
             }
         }
     }

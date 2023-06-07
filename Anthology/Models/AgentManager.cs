@@ -1,4 +1,6 @@
-﻿namespace Anthology.Models
+﻿using System.Text.Json;
+
+namespace Anthology.Models
 {
     public static class AgentManager
     {
@@ -6,25 +8,22 @@
         public static HashSet<Agent> Agents { get; set; } = new HashSet<Agent>();
 
         /** Initialize/reset all agent manager variables */
-        public static void Init()
+        public static void Init(string path)
         {
             Agents.Clear();
+            LoadAgentsFromFile(path);
         }
 
-        /**
-         * Iterates through all initiated agents in the global Agents set,
-         * and returns the agent with the specified name
-         */
-        public static Agent? GetAgentByName(string name)
+        /** Gets the agent in the simulation with the matching name */
+        public static Agent GetAgentByName(string name)
         {
             bool MatchName(Agent a)
             {
-                return a.Name != name;
+                return a.Name == name;
             }
 
-            Agent agent = Agents.Where(MatchName).First();
-            if (agent != null) { return agent; }
-            else return null;
+            Agent agent = Agents.First(MatchName);
+            return agent;
         }
 
         /** Check whether the agent satisfies the motive requirement for an action */
@@ -34,35 +33,35 @@
             {
                 if (r is RMotive rMotive)
                 {
-                    MotiveEnum t = rMotive.MotiveType;
+                    string t = rMotive.MotiveType;
                     float c = rMotive.Threshold;
                     switch (rMotive.Operation)
                     {
-                        case BinOpEnum.EQUALS:
+                        case BinOps.EQUALS:
                             if (!(agent.Motives[t].Amount == c))
                             {
                                 return false;
                             }
                             break;
-                        case BinOpEnum.LESS:
+                        case BinOps.LESS:
                             if (!(agent.Motives[t].Amount < c))
                             {
                                 return false;
                             }
                             break;
-                        case BinOpEnum.GREATER:
+                        case BinOps.GREATER:
                             if (!(agent.Motives[t].Amount > c))
                             {
                                 return false;
                             }
                             break;
-                        case BinOpEnum.LESS_EQUALS:
+                        case BinOps.LESS_EQUALS:
                             if (!(agent.Motives[t].Amount <= c))
                             {
                                 return false;
                             }
                             break;
-                        case BinOpEnum.GREATER_EQUALS:
+                        case BinOps.GREATER_EQUALS:
                             if (!(agent.Motives[t].Amount >= c))
                             {
                                 return false;
@@ -96,6 +95,34 @@
             foreach (Agent a in Agents)
             {
                 a.DecrementMotives();
+            }
+        }
+
+        /** Returns a JSON string representing the list of all agents in the simulation */
+        public static string SerializeAllAgents()
+        {
+            List<SerializableAgent> sAgents = new();
+            foreach(Agent a in Agents)
+            {
+                sAgents.Add(SerializableAgent.SerializeAgent(a));
+            }
+
+            return JsonSerializer.Serialize(sAgents, UI.Jso);
+        }
+
+        /** 
+         * Populates the list of agents in the simulation from the given file path
+         * If the given file cannot be read or is formatted incorrectly, an exception will be thrown 
+         */
+        public static void LoadAgentsFromFile(string path)
+        {
+            string agentsText = File.ReadAllText(path);
+            List<SerializableAgent>? sAgents = JsonSerializer.Deserialize<List<SerializableAgent>>(agentsText, UI.Jso);
+
+            if (sAgents == null) return;
+            foreach (SerializableAgent s in sAgents)
+            {
+                Agents.Add(SerializableAgent.DeserializeToAgent(s));
             }
         }
     }
