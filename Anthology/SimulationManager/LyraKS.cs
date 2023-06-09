@@ -1,4 +1,7 @@
-﻿namespace Anthology.SimulationManager
+﻿using System.Diagnostics;
+using System.Net.Http.Headers;
+
+namespace Anthology.SimulationManager
 {
     /**
      * Concrete example implementation of KnowledgeSim using the Lyra API 
@@ -6,10 +9,17 @@
      */
     public class LyraKS : KnowledgeSim
     {
+        private static string LYRA_URI = "http://127.0.0.1:8000";
+
+        private HttpClient client = new HttpClient();
+
         /** TODO */
-        public override void Init(string pathFile = "")
+        public async override void Init(string pathFile = "")
         {
-            throw new NotImplementedException();
+            client.BaseAddress = new Uri(LYRA_URI);
+
+            var result = await client.GetAsync("lyra/sim/start");
+            Debug.WriteLine(result);
         }
 
         /** TODO */
