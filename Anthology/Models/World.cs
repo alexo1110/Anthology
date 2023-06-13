@@ -5,6 +5,9 @@
         /** World time, or ticks */
         public static int Time { get; set; } = 0;
 
+        /** Json parser to use for file I/O, can be swapped from compatibility */
+        public static JsonRW ReadWrite { get; set; } = new NetJson();
+
         /** Initialize/reset all static world variables */
         public static void Init(string actionPath, string agentPath, string locationPath)
         {

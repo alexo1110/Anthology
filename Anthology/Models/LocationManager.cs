@@ -1,6 +1,4 @@
-﻿using System.Text.Json;
-
-namespace Anthology.Models
+﻿namespace Anthology.Models
 {
     /** Provides functionality for checking location-centric conditions */
     public static class LocationManager
@@ -24,7 +22,7 @@ namespace Anthology.Models
                     LocationGrid[i][k] = new SimLocation();
                 }
             }
-            LoadLocationsFromFile(path);
+            World.ReadWrite.LoadLocationsFromFile(path);
         }
 
         /** Add a location to both the location set and the location grid */

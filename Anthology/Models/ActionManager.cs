@@ -1,6 +1,4 @@
-﻿using System.Text.Json;
-
-namespace Anthology.Models
+﻿namespace Anthology.Models
 {
     public static class ActionManager
     {
@@ -12,7 +10,7 @@ namespace Anthology.Models
         {
             Actions.ScheduleActions.Clear();
             Actions.PrimaryActions.Clear();
-            LoadActionsFromFile(path);
+            World.ReadWrite.LoadActionsFromFile();
         }
 
         /** Retrieves an action with the specified name from the set of actions available in the simulation */

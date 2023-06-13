@@ -1,6 +1,4 @@
-﻿using System.Text.Json;
-
-namespace Anthology.Models
+﻿namespace Anthology.Models
 {
     public static class AgentManager
     {
@@ -11,7 +9,7 @@ namespace Anthology.Models
         public static void Init(string path)
         {
             Agents.Clear();
-            LoadAgentsFromFile(path);
+            World.ReadWrite.LoadAgentsFromFile(path);
         }
 
         /** Gets the agent in the simulation with the matching name */
