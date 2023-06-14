@@ -1,24 +1,37 @@
-using System.Text.Json.S
+using System.Text.Json;
 
 namespace Anthology.Models
 {
     public class NetJson : JsonRW 
     {
-        private static JsonSerializerOptions Jso { get; } = new()
+        public static JsonSerializerOptions Jso { get; } = new()
         {
             Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
             WriteIndented = true
         };
 
-        public override LoadActionsFromFile(string path) 
+        public override void InitWorldFromPaths(string pathsFile)
+        {
+            using FileStream os = File.OpenRead(pathsFile);
+            Dictionary<string, string>? filePaths = JsonSerializer.Deserialize<Dictionary<string, string>>(os, Jso);
+            if (filePaths == null || filePaths.Count < 3) { throw new FormatException("Unable to load Anthology world state from file"); ; }
+            World.Init(filePaths["Actions"], filePaths["Agents"], filePaths["Locations"]);
+        }
+
+        public override void LoadActionsFromFile(string path) 
         {
             string actionsText = File.ReadAllText(path);
             ActionContainer? actions = JsonSerializer.Deserialize<ActionContainer>(actionsText, Jso);
             if (actions == null) return;
-            Actions = actions;
+            ActionManager.Actions = actions;
         }
 
-        public override LoadAgentsFromFile(string path) 
+        public override string SerializeAllActions()
+        {
+            return JsonSerializer.Serialize(ActionManager.Actions, Jso);
+        }
+
+        public override void LoadAgentsFromFile(string path) 
         {
             string agentsText = File.ReadAllText(path);
             List<SerializableAgent>? sAgents = JsonSerializer.Deserialize<List<SerializableAgent>>(agentsText, Jso);
@@ -26,20 +39,42 @@ namespace Anthology.Models
             if (sAgents == null) return;
             foreach (SerializableAgent s in sAgents)
             {
-                Agents.Add(SerializableAgent.DeserializeToAgent(s));
+                AgentManager.Agents.Add(SerializableAgent.DeserializeToAgent(s));
             }
         }
 
-        public override LoadLocationsFromFile(string path) 
+        public override string SerializeAllAgents()
         {
-            string agentsText = File.ReadAllText(path);
-            List<SerializableAgent>? sAgents = JsonSerializer.Deserialize<List<SerializableAgent>>(agentsText, Jso);
-
-            if (sAgents == null) return;
-            foreach (SerializableAgent s in sAgents)
+            List<SerializableAgent> sAgents = new();
+            foreach(Agent a in AgentManager.Agents)
             {
-                Agents.Add(SerializableAgent.DeserializeToAgent(s));
+                sAgents.Add(SerializableAgent.SerializeAgent(a));
             }
+
+            return JsonSerializer.Serialize(sAgents, Jso);
+        }
+
+        public override void LoadLocationsFromFile(string path) 
+        {
+            string locationsText = File.ReadAllText(path);
+            IEnumerable<SimLocation>? sLocations = JsonSerializer.Deserialize<IEnumerable<SimLocation>>(locationsText, Jso);
+
+            if (sLocations == null) return;
+            foreach (SimLocation l in sLocations)
+            {
+                LocationManager.AddLocation(l);
+            }
+        }
+
+        public override string SerializeAllLocations()
+        {
+            static bool HasName(SimLocation simLocation)
+            {
+                return simLocation.Name != string.Empty;
+            }
+
+            IEnumerable<SimLocation> namedLocations = LocationManager.LocationSet.Where(HasName);
+            return JsonSerializer.Serialize(namedLocations, Jso);
         }
     }
 }

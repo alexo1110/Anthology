@@ -250,7 +250,7 @@ namespace Anthology.Models
                     }
                 }
             }
-            Console.WriteLine(JsonSerializer.Serialize(actionSelectLog, UI.Jso));
+            // Console.WriteLine(JsonSerializer.Serialize(actionSelectLog, UI.Jso));
             Random r = new();
             int idx = r.Next(0, currentChoice.Count);
             Action choice = currentChoice[idx];

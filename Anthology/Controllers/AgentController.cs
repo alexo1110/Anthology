@@ -14,7 +14,7 @@ namespace Anthology.Controllers
         // GET: /Agent/Print/
         public string Print()
         {
-            string test = AgentManager.SerializeAllAgents();
+            string test = World.ReadWrite.SerializeAllAgents();
             return test;
         }
     }

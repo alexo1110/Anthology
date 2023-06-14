@@ -179,33 +179,5 @@
             int idx = r.Next(0, closestSet.Count);
             return closestSet.ElementAt(idx);
         }
-
-        /** Returns a JSON string representing the set of all named locations in the simulation */
-        public static string SerializeAllLocations()
-        {
-            static bool HasName(SimLocation simLocation)
-            {
-                return simLocation.Name != string.Empty;
-            }
-
-            IEnumerable<SimLocation> namedLocations = LocationSet.Where(HasName);
-            return JsonSerializer.Serialize(namedLocations, UI.Jso);
-        }
-
-        /**
-         * Populates the set of locations in the simulation from the given file path
-         * If the given file cannot be read or is formatted incorrectly, an exception will be thrown
-         */
-        public static void LoadLocationsFromFile(string path)
-        {
-            string locationsText = File.ReadAllText(path);
-            IEnumerable<SimLocation>? sLocations = JsonSerializer.Deserialize<IEnumerable<SimLocation>>(locationsText, UI.Jso);
-
-            if (sLocations == null) return;
-            foreach (SimLocation l in sLocations)
-            {
-                AddLocation(l);
-            }
-        }
     }
 }

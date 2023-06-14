@@ -95,33 +95,5 @@
                 a.DecrementMotives();
             }
         }
-
-        /** Returns a JSON string representing the list of all agents in the simulation */
-        public static string SerializeAllAgents()
-        {
-            List<SerializableAgent> sAgents = new();
-            foreach(Agent a in Agents)
-            {
-                sAgents.Add(SerializableAgent.SerializeAgent(a));
-            }
-
-            return JsonSerializer.Serialize(sAgents, UI.Jso);
-        }
-
-        /** 
-         * Populates the list of agents in the simulation from the given file path
-         * If the given file cannot be read or is formatted incorrectly, an exception will be thrown 
-         */
-        public static void LoadAgentsFromFile(string path)
-        {
-            string agentsText = File.ReadAllText(path);
-            List<SerializableAgent>? sAgents = JsonSerializer.Deserialize<List<SerializableAgent>>(agentsText, UI.Jso);
-
-            if (sAgents == null) return;
-            foreach (SerializableAgent s in sAgents)
-            {
-                Agents.Add(SerializableAgent.DeserializeToAgent(s));
-            }
-        }
     }
 }

@@ -14,7 +14,7 @@ namespace Anthology.Controllers
         public string Step(int id)
         {
             ExecutionManager.RunSim(id);
-            string state = "Time: " + World.Time + "\n\n" + AgentManager.SerializeAllAgents();
+            string state = "Time: " + World.Time + "\n\n" + World.ReadWrite.SerializeAllAgents();
             return state;
         }
     }
