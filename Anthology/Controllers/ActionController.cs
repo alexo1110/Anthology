@@ -13,7 +13,7 @@ namespace Anthology.Controllers
         // GET: /Action/Print/
         public string Print()
         {
-            string test = ActionManager.SerializeAllActions();
+            string test = World.ReadWrite.SerializeAllActions();
             return test;
         }
     }

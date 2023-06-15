@@ -1,6 +1,4 @@
-﻿using System.Text.Json;
-
-namespace Anthology.Models
+﻿namespace Anthology.Models
 {
     public static class ActionManager
     {
@@ -12,7 +10,7 @@ namespace Anthology.Models
         {
             Actions.ScheduleActions.Clear();
             Actions.PrimaryActions.Clear();
-            LoadActionsFromFile(path);
+            World.ReadWrite.LoadActionsFromFile(path);
         }
 
         /** Retrieves an action with the specified name from the set of actions available in the simulation */
@@ -66,24 +64,6 @@ namespace Anthology.Models
             }
 
             return deltaUtility;
-        }
-
-        /** Returns a JSON string representing the set of all actions in the simulation */
-        public static string SerializeAllActions()
-        {
-            return JsonSerializer.Serialize(Actions, UI.Jso);
-        }
-
-        /**
-         * Populates the set of actions in the simulation from the given file path
-         * If the given file cannot be read or is formatted incorrectly, an exception is thrown
-         */
-        public static void LoadActionsFromFile(string path)
-        {
-            string actionsText = File.ReadAllText(path);
-            ActionContainer? actions = JsonSerializer.Deserialize<ActionContainer>(actionsText, UI.Jso);
-            if (actions == null) return;
-            Actions = actions;
         }
     }
 }

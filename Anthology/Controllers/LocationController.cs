@@ -13,7 +13,7 @@ namespace Anthology.Controllers
         // GET: /Location/Print/
         public string Print()
         {
-            string test = LocationManager.SerializeAllLocations();
+            string test = World.ReadWrite.SerializeAllLocations();
             return test;
         }
     }
