@@ -23,7 +23,7 @@ namespace Anthology.SimulationManager
         public static KnowledgeSim? Knowledge { get; set; }
 
         /** The number of iterations run since the initializaztion of the simulation manager */
-        private static uint NumIterations { get; set; }
+        public static uint NumIterations { get; set; }
 
         /** 
          * Initializes the simulation manager using the given file pathname and types of 
@@ -80,11 +80,6 @@ namespace Anthology.SimulationManager
             }
             Debug.WriteLine("*** End NPC Information ***");
         }
-
-        //public static NPC GetNPCByUUID(uint uuid)
-        //{
-        //    return NPCs[uuid];
-        //}
 
         /**
          * Sends the specified NPC to both the reality and knowledge simulations in order to update 
