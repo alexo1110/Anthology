@@ -81,11 +81,6 @@ namespace Anthology.SimulationManager
             Debug.WriteLine("*** End NPC Information ***");
         }
 
-        //public static NPC GetNPCByUUID(uint uuid)
-        //{
-        //    return NPCs[uuid];
-        //}
-
         /**
          * Sends the specified NPC to both the reality and knowledge simulations in order to update 
          * any information on their end.
