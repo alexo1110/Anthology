@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using Anthology.SimulationManager;
+using Anthology.SimulationManager.HistoryManager;
 
 namespace Anthology.Controllers
 {
@@ -16,7 +17,7 @@ namespace Anthology.Controllers
 
         public IActionResult Index()
         {
-            SimManager.Init("Data\\Paths.json", typeof(AnthologyRS), typeof(LyraKS));
+            SimManager.Init("Data\\Paths.json", typeof(AnthologyRS), typeof(LyraKS), typeof(MongoHM));
             return View();
         }
 

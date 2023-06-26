@@ -58,6 +58,7 @@ namespace Anthology.SimulationManager
 
         public override void UpdateNpc(NPC npc)
         {
+            bool shouldLog = false;
             Agent agent = AgentManager.GetAgentByName(npc.Name);
             npc.Coordinates.X = agent.XLocation;
             npc.Coordinates.Y = agent.YLocation;
@@ -72,11 +73,25 @@ namespace Anthology.SimulationManager
             Dictionary<string, Motive> motives = agent.Motives;
             foreach (string mote in motives.Keys)
             {
-                npc.Motives[mote] = motives[mote].Amount;
+                if (!npc.Motives.ContainsKey(mote))
+                {
+                    npc.Motives[mote] = motives[mote].Amount;
+                }
+                else if (npc.Motives[mote] != motives[mote].Amount) {
+                    shouldLog |= true;
+                    npc.Motives[mote] = motives[mote].Amount;
+                }
             }
-            if (agent.CurrentAction.Count > 0)
+            if (agent.CurrentAction.Count > 0 && npc.CurrentAction.Name != agent.CurrentAction.First().Name)
+            {
+                shouldLog = true;
                 npc.CurrentAction.Name = agent.CurrentAction.First().Name;
+            }
             npc.ActionCounter = agent.OccupiedCounter;
+            if (shouldLog)
+            {
+                SimManager.History?.AddNpcToLog(npc);
+            }
         }
 
         public override void PushUpdatedNpc(NPC npc)

@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿using MongoDB.Bson.Serialization.Attributes;
+using System.Numerics;
 
 namespace Anthology.SimulationManager
 {
@@ -14,6 +15,7 @@ namespace Anthology.SimulationManager
         public string Name { get; set; } = string.Empty;
 
         /** The (X,Y) position of the location */
+        [BsonId]
         public Vector2 Coordinates { get; set; }
 
         /** Arbitrary set of tags associated with the location */

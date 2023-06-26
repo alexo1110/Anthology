@@ -1,4 +1,5 @@
 using Anthology.SimulationManager;
+using Anthology.SimulationManager.HistoryManager;
 using System.Numerics;
 
 namespace SimManagerUnitTest
@@ -13,7 +14,7 @@ namespace SimManagerUnitTest
         {
             try
             {
-                SimManager.Init(DATA_JSON, typeof(AnthologyRS), typeof(LyraKS));
+                SimManager.Init(DATA_JSON, typeof(AnthologyRS), typeof(LyraKS), typeof(MongoHM));
             }
             catch (Exception e)
             {
