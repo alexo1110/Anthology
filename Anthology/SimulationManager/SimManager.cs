@@ -11,6 +11,8 @@ namespace Anthology.SimulationManager
      */
     public static class SimManager
     {
+        private const string LOG_PATH = "NPC History";
+
         /** Collection of NPCs coupled with data only pertinent to connecting simulations and the frontend */
         public static Dictionary<string, NPC> NPCs { get; set; } = new();
 
@@ -67,6 +69,7 @@ namespace Anthology.SimulationManager
                 History = Activator.CreateInstance(history) as HistoryLogger;
                 if (History == null)
                     throw new NullReferenceException("Could not create history logger");
+                History.ClearLog(LOG_PATH);
             }
             else 
                 throw new InvalidCastException("Failed to recognize history logger");
@@ -89,7 +92,7 @@ namespace Anthology.SimulationManager
                     // Print npc info for now
                     Debug.WriteLine(npc);
                 }
-                History?.LogNpcStates("NPC History");
+                History?.LogNpcStates(LOG_PATH);
             }
             Reality?.Run();
             Knowledge?.Run();

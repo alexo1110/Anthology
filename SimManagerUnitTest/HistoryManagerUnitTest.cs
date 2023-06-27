@@ -1,13 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MongoDB;
-using Anthology.SimulationManager.HistoryManager;
+﻿using Anthology.SimulationManager.HistoryManager;
 using MongoDB.Driver;
 using Anthology.SimulationManager;
-using MongoDB.Bson;
 
 namespace SimManagerUnitTest
 {
@@ -16,7 +9,7 @@ namespace SimManagerUnitTest
     {
         private const string DATA_JSON = "Data\\Paths.json";
 
-        private IMongoDatabase db = new MongoClient("mongodb://localhost:27017/").GetDatabase("SimManager");
+        private readonly IMongoDatabase db = new MongoClient("mongodb://localhost:27017/").GetDatabase("SimManager");
 
         [TestInitialize]
         public void TestInitialize()

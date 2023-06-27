@@ -1,0 +1,5 @@
+{
+  "Locations": "Data\\BigLocations.json",
+  "Actions": "Data\\BigActions.json",
+  "Agents": "Data\\BigAgents.json"
+}

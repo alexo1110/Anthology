@@ -30,10 +30,10 @@ namespace Anthology.SimulationManager
                 {
                     npc.Destination = LocationManager.LocationGrid[a.XDestination][a.YDestination].Name;
                 }
-                Dictionary<string, Motive> motives = a.Motives;
+                Dictionary<string, float> motives = a.Motives;
                 foreach (string mote in motives.Keys)
                 {
-                    npc.Motives[mote] = motives[mote].Amount;
+                    npc.Motives[mote] = motives[mote];
                 }
                 npcs[a.Name] = npc;
             }
@@ -70,16 +70,16 @@ namespace Anthology.SimulationManager
             {
                 npc.Destination = string.Empty;
             }
-            Dictionary<string, Motive> motives = agent.Motives;
+            Dictionary<string, float> motives = agent.Motives;
             foreach (string mote in motives.Keys)
             {
                 if (!npc.Motives.ContainsKey(mote))
                 {
-                    npc.Motives[mote] = motives[mote].Amount;
+                    npc.Motives[mote] = motives[mote];
                 }
-                else if (npc.Motives[mote] != motives[mote].Amount) {
+                else if (npc.Motives[mote] != motives[mote]) {
                     shouldLog |= true;
-                    npc.Motives[mote] = motives[mote].Amount;
+                    npc.Motives[mote] = motives[mote];
                 }
             }
             if (agent.CurrentAction.Count > 0 && npc.CurrentAction.Name != agent.CurrentAction.First().Name)
@@ -102,7 +102,7 @@ namespace Anthology.SimulationManager
             Dictionary<string, float> motives = npc.Motives;
             foreach (string mote in motives.Keys)
             {
-                agent.Motives[mote].Amount = motives[mote];
+                agent.Motives[mote] = motives[mote];
             }
         }
 
