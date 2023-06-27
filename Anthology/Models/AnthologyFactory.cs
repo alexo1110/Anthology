@@ -4,11 +4,11 @@ namespace Anthology.Models
 {
     public static class AnthologyFactory
     {
-        public static HashSet<Agent> GenerateAgents(uint n, int gridSize)
+        public static void GenerateAgents(uint n, int gridSize)
         {
-            HashSet<Agent> agents = new();
-            Random r = new();
+            AgentManager.Agents.Clear();
 
+            Random r = new();
             for (uint i = 0; i < n; i++)
             {
                 Agent a = new()
@@ -25,38 +25,56 @@ namespace Anthology.Models
                     XLocation = r.Next(gridSize),
                     YLocation = r.Next(gridSize),
                 };
-                agents.Add(a);
+                AgentManager.Agents.Add(a);
             }
-            return agents;
         }
 
-        public static HashSet<SimLocation> GenerateSimLocations(uint n, int gridSize)
+        public static void GenerateSimLocations(uint n, int gridSize)
         {
-            HashSet<SimLocation> simLocations = new();
+            LocationManager.LocationSet.Clear();
+            LocationManager.LocationGrid.Clear();
+            for (int i = 0; i < gridSize; i++)
+            {
+                LocationManager.LocationGrid[i] = new Dictionary<int, SimLocation>();
+                for (int k = 0; k < gridSize; k++)
+                {
+                    LocationManager.LocationGrid[i][k] = new SimLocation();
+                }
+            }
+
             Random r = new();
+
             for (uint i = 0; i < n; i++)
             {
+                int x = r.Next(gridSize);
+                int y = r.Next(gridSize);
+                while (LocationManager.LocationGrid[x][y].Name != string.Empty)
+                {
+                    x = r.Next(gridSize);
+                    y = r.Next(gridSize);
+                }
                 SimLocation sl = new()
                 {
                     Name = "l_" + i,
-                    X = r.Next(gridSize),
-                    Y = r.Next(gridSize),
+                    X = x,
+                    Y = y,
                     Tags =
                     {
                         "t_" + (i % 3),
                         "t_" + ((i % 7) + 3)
                     }
                 };
-                simLocations.Add(sl);
+                LocationManager.AddLocation(sl);
             }
-            return simLocations;
         }
 
-        public static HashSet<PrimaryAction> GeneratePrimaryActions(uint n)
+        public static void GeneratePrimaryActions(uint n)
         {
-            HashSet<PrimaryAction> actions = new();
-            Random r = new();
+            ActionManager.Actions.PrimaryActions.Clear();
+            ActionManager.Actions.PrimaryActions.Add(new PrimaryAction() { Name = "travel_action" });
+            ActionManager.Actions.PrimaryActions.Add(new PrimaryAction() { Name = "wait_action" });
 
+            Random r = new();
             for (uint i = 0; i < n; i++)
             {
                 int rltype = r.Next(2);
@@ -91,9 +109,8 @@ namespace Anthology.Models
                         Locations = new() { rl }
                     }
                 };
-                actions.Add(a);
+                ActionManager.Actions.AddAction(a);
             }
-            return actions;
         }
     }
 }
