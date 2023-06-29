@@ -61,17 +61,17 @@ namespace SimManagerUnitTest
                 Assert.AreEqual(npc.CurrentAction.Name, "wait_action");
             }
 
-            Dictionary<Vector2, Location> locations = new();
+            Dictionary<Location.Coords, Location> locations = new();
             SimManager.Reality?.LoadLocations(locations);
             Assert.IsTrue(locations.Count > 0);
-            Assert.IsTrue(locations.ContainsKey(new Vector2(5, 5)));
-            Assert.IsTrue(locations.ContainsKey(new Vector2(4, 5)));
-            Assert.IsTrue(locations.ContainsKey(new Vector2(3, 2)));
-            Assert.IsTrue(locations.ContainsKey(new Vector2(1, 2)));
-            Assert.IsTrue(locations.ContainsKey(new Vector2(1, 1)));
-            Assert.IsTrue(locations.ContainsKey(new Vector2(1, 3)));
-            Assert.AreEqual("Physics Hall", locations[new Vector2(1, 3)].Name);
-            Assert.IsTrue(locations[new Vector2(1, 2)].Tags.Contains("outdoor"));
+            Assert.IsTrue(locations.ContainsKey(new Location.Coords(5, 5)));
+            Assert.IsTrue(locations.ContainsKey(new Location.Coords(4, 5)));
+            Assert.IsTrue(locations.ContainsKey(new Location.Coords(3, 2)));
+            Assert.IsTrue(locations.ContainsKey(new Location.Coords(1, 2)));
+            Assert.IsTrue(locations.ContainsKey(new Location.Coords(1, 1)));
+            Assert.IsTrue(locations.ContainsKey(new Location.Coords(1, 3)));
+            Assert.AreEqual("Physics Hall", locations[new Location.Coords(1, 3)].Name);
+            Assert.IsTrue(locations[new Location.Coords(1, 2)].Tags.Contains("outdoor"));
         }
 
         [TestMethod]

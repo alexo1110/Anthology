@@ -1,5 +1,6 @@
 ﻿using Anthology.SimulationManager.HistoryManager;
 using System.Diagnostics;
+using System.Linq;
 using System.Numerics;
 
 namespace Anthology.SimulationManager
@@ -17,7 +18,7 @@ namespace Anthology.SimulationManager
         public static Dictionary<string, NPC> NPCs { get; set; } = new();
 
         /** Collection of Locations as they exist for use by the frontend and for synchronization with the simulations */
-        public static Dictionary<Vector2, Location> Locations { get; set; } = new();
+        public static Dictionary<Location.Coords, Location> Locations { get; set; } = new();
 
         /** The simulation used for updating NPC actions, locations, and other physical traits */
         public static RealitySim? Reality { get; set; }
@@ -113,6 +114,25 @@ namespace Anthology.SimulationManager
                 Reality?.PushUpdatedNpc(npc);
                 Knowledge?.PushUpdatedNpc(npc);
                 npc.Dirty = false;
+            }
+        }
+
+        public static void SaveState(string stateName = "")
+        {
+            History.SaveState(stateName);
+        }
+
+        public static void LoadState(string stateName)
+        {
+            SimState state = History?.LoadState(stateName);
+            foreach (Location newLoc in state.Locations)
+                Locations[newLoc.Coordinates] = newLoc;
+            Reality.LoadLocations(Locations);
+
+            foreach (NPC newNPC in state.NPCs)
+            {
+                NPCs[newNPC.Name] = newNPC;
+                Reality.PushUpdatedNpc(newNPC);              
             }
         }
     }

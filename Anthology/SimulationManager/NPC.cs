@@ -1,20 +1,17 @@
-﻿using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
-using System.Numerics;
+﻿using System.Numerics;
 using System.Text;
 
 namespace Anthology.SimulationManager
 {
-    /**
-     * An Agent/Actor/Individual/Unit/NPC to be maintained by the simulation manager
-     * Contains data necessary for coordinating behavior across simulations and for
-     * displaying information on the frontend
-     */
-    public class NPC
-    {
+  /**
+   * An Agent/Actor/Individual/Unit/NPC to be maintained by the simulation manager
+   * Contains data necessary for coordinating behavior across simulations and for
+   * displaying information on the frontend
+   */
+  public class NPC
+  {
         /** The name of the NPC */
         private string name = string.Empty;
-        [BsonId]
         public string Name
         {
             get { return name; }
@@ -22,7 +19,6 @@ namespace Anthology.SimulationManager
         }
 
         /** The (X,Y) coordinate location of the NPC */
-        [BsonElement("Coordinates")]
         private Vector2 coordinates;
         public ref Vector2 Coordinates
         {
@@ -70,7 +66,6 @@ namespace Anthology.SimulationManager
         }
 
         /** Whether or not this NPC has been modified and needs to have its update pushed */
-        [BsonIgnore]
         public bool Dirty { get; set; } = false;
 
         /**

@@ -10,11 +10,13 @@ namespace Anthology.SimulationManager.HistoryManager
 
         public abstract void LogNpcStates(string? destination);
 
-        public abstract void SaveState(string destination);
+        public abstract void SaveState(string stateName);
 
-        public abstract void LoadState(string state);
+        public abstract SimState LoadState(string stateName);
 
-        public abstract void DeleteState(string state);
+        public abstract void DeleteState(string stateName);
+
+        public abstract void ClearStates();
 
         public abstract void ClearLog(string log);
     }
@@ -30,14 +32,15 @@ namespace Anthology.SimulationManager.HistoryManager
     public class SimState
     {
         [BsonId]
-        public string SimName { get; set; } = "Sim " + DateTime.Now;
+        public string SimName { get; set; }
 
         public HashSet<NPC> NPCs { get; set; }
 
         public HashSet<Location> Locations { get; set; }
 
-        public SimState()
+        public SimState(string name = "")
         {
+            SimName = name == "" ? "Sim " + DateTime.Now : name;
             NPCs = new();
             NPCs.UnionWith(SimManager.NPCs.Values);
             Locations = new();

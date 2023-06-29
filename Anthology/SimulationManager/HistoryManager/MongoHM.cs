@@ -1,10 +1,15 @@
 ﻿using MongoDB.Driver;
+using System.Linq.Expressions;
 
 namespace Anthology.SimulationManager.HistoryManager
 {
     public class MongoHM : HistoryLogger
     {
         private MongoClient DbClient { get; set; } = new MongoClient("mongodb://localhost:27017/");
+
+        private const string SAVE_STATE_COLLECTION_NAME = "save_states";
+
+        private IMongoCollection<SimState> SimStates { get; set; }
 
         private IMongoDatabase Database { get; set; }
         
@@ -18,6 +23,13 @@ namespace Anthology.SimulationManager.HistoryManager
             {
                 Database.CreateCollection("EventLog");
                 LastUsedLog = Database.GetCollection<EventLog>("EventLog");
+            }
+
+            SimStates = Database.GetCollection<SimState>(SAVE_STATE_COLLECTION_NAME);
+            if(SimStates == null)
+            {
+                Database.CreateCollection(SAVE_STATE_COLLECTION_NAME);
+                SimStates = Database.GetCollection<SimState>(SAVE_STATE_COLLECTION_NAME);
             }
         }
 
@@ -50,25 +62,27 @@ namespace Anthology.SimulationManager.HistoryManager
             }
         }
 
-        public override void SaveState(string destination)
+        public override void SaveState(string stateName)
         {
-            IMongoCollection<SimState> stateCollection = Database.GetCollection<SimState>(destination);
-            if (stateCollection == null)
-            {
-                Database.CreateCollection(destination);
-                stateCollection = Database.GetCollection<SimState>(destination);
-            }
-            stateCollection.InsertOne(new SimState());
+            SimStates.InsertOne(new SimState(stateName));
         }
 
-        public override void LoadState(string state)
+        public override SimState LoadState(string stateName)
         {
-            throw new NotImplementedException();
+            SimState state = SimStates.Find(simState => simState.SimName.Equals(stateName) ).ToList().First();
+            if(state == null)
+                throw new NullReferenceException("Not state with name: " + stateName);
+            return state;
         }
 
-        public override void DeleteState(string state)
+        public override void DeleteState(string stateName)
         {
-            Database.DropCollection(state);
+            SimStates.DeleteOne(state => state.SimName.Equals(stateName));
+        }
+
+        public override void ClearStates()
+        {
+            Database.DropCollection(SAVE_STATE_COLLECTION_NAME);
         }
 
         public override void ClearLog(string log)

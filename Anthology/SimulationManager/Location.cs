@@ -14,9 +14,28 @@ namespace Anthology.SimulationManager
         /** The name of the location */
         public string Name { get; set; } = string.Empty;
 
-        /** The (X,Y) position of the location */
+        public struct Coords
+        {
+            public int X { get; set; }
+            public int Y { get; set; }
+
+            public Coords()
+            {
+                X = 0;
+                Y = 0;
+            }
+
+            [BsonConstructor]
+            public Coords(int x, int y)
+            {
+                X = x;
+                Y = y;
+            }
+        }
+
         [BsonId]
-        public Vector2 Coordinates { get; set; }
+        /** The (X,Y) position of the location */
+        public Coords Coordinates { get; set; } = new();
 
         /** Arbitrary set of tags associated with the location */
         public HashSet<string> Tags { get; set; } = new();

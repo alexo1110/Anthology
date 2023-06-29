@@ -39,7 +39,7 @@ namespace Anthology.SimulationManager
             }
         }
 
-        public override void LoadLocations(Dictionary<Vector2, Location> locations)
+        public override void LoadLocations(Dictionary<Location.Coords, Location> locations)
         {
             locations.Clear();
             HashSet<SimLocation> simLocations = LocationManager.LocationSet;
