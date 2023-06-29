@@ -89,22 +89,16 @@ namespace Anthology.SimulationManager
                 {
                     Reality?.UpdateNpc(npc);
                     Knowledge?.UpdateNpc(npc);
-                    // Print npc info for now
-                    Debug.WriteLine(npc);
                 }
                 History?.LogNpcStates(LOG_PATH);
             }
             Reality?.Run();
             Knowledge?.Run();
-            Debug.WriteLine(string.Format("--- NPC Information for Iteration {0} ---", NumIterations));
             foreach (NPC npc in NPCs.Values)
             {
                 Reality?.UpdateNpc(npc);
                 Knowledge?.UpdateNpc(npc);
-                // Print npc info for now
-                Debug.WriteLine(npc);
             }
-            Debug.WriteLine("*** End NPC Information ***");
         }
 
         /**

@@ -4,10 +4,10 @@ using System.Text.Json;
 namespace Anthology.Models
 {
     /**
- * Relationship class
- * Relationships are composed by agents, so the owning agent will always be the source of the relationship.
- * eg. an agent that has the 'brother' relationship with Norma is Norma's brother
- */
+     * Relationship class
+     * Relationships are composed by agents, so the owning agent will always be the source of the relationship.
+     * eg. an agent that has the 'brother' relationship with Norma is Norma's brother
+     */
     public class Relationship
     {
         /** The type of relationship, eg. 'student' or 'teacher' */
@@ -70,7 +70,7 @@ namespace Anthology.Models
             YDestination = destination.Y;
             SimLocation currentLoc = LocationManager.LocationGrid[XLocation][YLocation];
             OccupiedCounter = LocationManager.FindManhattanDistance(currentLoc, destination);
-            Console.WriteLine("time: " + time.ToString() + " | " + Name + ": Started " + CurrentAction.First().Name + "; Destination: " + destination.Name);
+/*            Console.WriteLine("time: " + time.ToString() + " | " + Name + ": Started " + CurrentAction.First().Name + "; Destination: " + destination.Name);*/
         }
 
         /**
@@ -97,7 +97,6 @@ namespace Anthology.Models
                 YDestination = -1;
                 return;
             }
-
             LocationManager.LocationGrid[XLocation][YLocation].AgentsPresent.Add(Name);
         }
 
@@ -121,7 +120,6 @@ namespace Anthology.Models
                         float current = Motives[e.Key];
                         Motives[e.Key] = Math.Clamp(delta + current, Motive.MIN, Motive.MAX);
                     }
-                    Console.WriteLine("time: " + World.Time.ToString() + " | " + Name + ": Finished " + action.Name);
                 }
                 else if (action is ScheduleAction sAction)
                 {
@@ -143,7 +141,6 @@ namespace Anthology.Models
                         {
                             target.CurrentAction.AddLast(ActionManager.GetActionByName(sAction.TargetAction));
                         }
-                        Console.WriteLine("time: " + World.Time.ToString() + " | " + target.Name + ": Affected by " + sAction.TargetAction);
                     }
                 }
             }
@@ -167,7 +164,6 @@ namespace Anthology.Models
                     CurrentTargets.Add(AgentManager.GetAgentByName(name));
                 }
             }
-            Console.WriteLine("time: " + World.Time.ToString() + " | " + Name + ": Started " + action.Name);
         }
 
         /**
@@ -226,9 +222,9 @@ namespace Anthology.Models
                     if (nearestLocation == null) continue;
                     travelTime = LocationManager.FindManhattanDistance(nearestLocation, currentLoc);
                     float deltaUtility = ActionManager.GetEffectDeltaForAgentAction(this, action);
-                    actionSelectLog.Add("Action Utility: " + deltaUtility.ToString());
+/*                    actionSelectLog.Add("Action Utility: " + deltaUtility.ToString());*/
                     deltaUtility /= (action.MinTime + travelTime);
-                    actionSelectLog.Add("Action Weighted Utility: " + deltaUtility.ToString());
+/*                    actionSelectLog.Add("Action Weighted Utility: " + deltaUtility.ToString());*/
 
                     if (deltaUtility == maxDeltaUtility)
                     {
@@ -243,14 +239,13 @@ namespace Anthology.Models
                         currentChoice.Add(action);
                         currentDest.Add(nearestLocation);
                     }
-                    if (currentChoice.Count > 0)
+/*                    if (currentChoice.Count > 0)
                     {
                         actionSelectLog.Add("Current Choice: " + currentChoice.First().Name);
                         actionSelectLog.Add("Current Destination: " + currentDest.First().Name);
-                    }
+                    }*/
                 }
             }
-            // Console.WriteLine(JsonSerializer.Serialize(actionSelectLog, UI.Jso));
             Random r = new();
             int idx = r.Next(0, currentChoice.Count);
             Action choice = currentChoice[idx];

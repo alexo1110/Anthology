@@ -13,33 +13,202 @@ namespace SimManagerUnitTest
     [TestClass]
     public class SimManagerStressTest
     {
-        [TestMethod]
-        public void TestFactories()
-        {
-            AnthologyFactory.GenerateAgents(10000, 20);
-            AnthologyFactory.GenerateSimLocations(10, 20);
-            AnthologyFactory.GeneratePrimaryActions(10);
-            
-            string agentsSerialized = World.ReadWrite.SerializeAllAgents();
-            string locationsSerialized = World.ReadWrite.SerializeAllLocations();
-            string actionsSerialized = World.ReadWrite.SerializeAllActions();
+        private const int NUM_ACTIONS = 10;
+        private const int NUM_ITERATIONS = 60;
 
-            Assert.IsTrue(agentsSerialized.Contains("a_0"));
-            Assert.IsTrue(agentsSerialized.Contains("a_99"));
-            Assert.IsTrue(locationsSerialized.Contains("l_0"));
-            Assert.IsTrue(locationsSerialized.Contains("l_4"));
-            Assert.IsTrue(actionsSerialized.Contains("action_0"));
-            Assert.IsTrue(actionsSerialized.Contains("action_9"));
-            
+        [TestMethod]
+        public void TestHundredAgentsFiveLocations()
+        {
+            AnthologyFactory.GenerateAgents(100, 10);
+            AnthologyFactory.GenerateSimLocations(5, 10);
+            AnthologyFactory.GeneratePrimaryActions(NUM_ACTIONS);
             
             Stopwatch timer = Stopwatch.StartNew();
-            ExecutionManager.RunSim(1440);
+            ExecutionManager.RunSim(NUM_ITERATIONS);
             timer.Stop();
-            Assert.IsTrue(timer.ElapsedMilliseconds < 10000);
-            
-            // Need to populate location grid with location set. Could be solved by saving an generation to json files and loading them with Init()
-            
-            
+            Assert.IsTrue(timer.ElapsedMilliseconds < 1, "Time elapsed = " + timer.ElapsedMilliseconds + "ms.");
+        }
+
+        [TestMethod]
+        public void TestHundredAgentsTenLocations()
+        {
+            AnthologyFactory.GenerateAgents(100, 10);
+            AnthologyFactory.GenerateSimLocations(10, 10);
+            AnthologyFactory.GeneratePrimaryActions(NUM_ACTIONS);
+
+            Stopwatch timer = Stopwatch.StartNew();
+            ExecutionManager.RunSim(NUM_ITERATIONS);
+            timer.Stop();
+            Assert.IsTrue(timer.ElapsedMilliseconds < 1, "Time elapsed = " + timer.ElapsedMilliseconds + "ms.");
+        }
+
+        [TestMethod]
+        public void TestHundredAgentsTwentyLocations()
+        {
+            AnthologyFactory.GenerateAgents(100, 10);
+            AnthologyFactory.GenerateSimLocations(20, 10);
+            AnthologyFactory.GeneratePrimaryActions(NUM_ACTIONS);
+
+            Stopwatch timer = Stopwatch.StartNew();
+            ExecutionManager.RunSim(NUM_ITERATIONS);
+            timer.Stop();
+            Assert.IsTrue(timer.ElapsedMilliseconds < 1, "Time elapsed = " + timer.ElapsedMilliseconds + "ms.");
+        }
+
+        [TestMethod]
+        public void TestThousandAgentsTenLocations()
+        {
+            AnthologyFactory.GenerateAgents(1000, 20);
+            AnthologyFactory.GenerateSimLocations(10, 20);
+            AnthologyFactory.GeneratePrimaryActions(NUM_ACTIONS);
+
+            Stopwatch timer = Stopwatch.StartNew();
+            ExecutionManager.RunSim(NUM_ITERATIONS);
+            timer.Stop();
+            Assert.IsTrue(timer.ElapsedMilliseconds < 1, "Time elapsed = " + timer.ElapsedMilliseconds + "ms.");
+        }
+
+        [TestMethod]
+        public void TestThousandAgentsFiftyLocations()
+        {
+            AnthologyFactory.GenerateAgents(1000, 20);
+            AnthologyFactory.GenerateSimLocations(50, 20);
+            AnthologyFactory.GeneratePrimaryActions(NUM_ACTIONS);
+
+            Stopwatch timer = Stopwatch.StartNew();
+            ExecutionManager.RunSim(NUM_ITERATIONS);
+            timer.Stop();
+            Assert.IsTrue(timer.ElapsedMilliseconds < 1, "Time elapsed = " + timer.ElapsedMilliseconds + "ms.");
+        }
+
+        [TestMethod]
+        public void TestThousandAgentsHundredLocations()
+        {
+            AnthologyFactory.GenerateAgents(1000, 20);
+            AnthologyFactory.GenerateSimLocations(100, 20);
+            AnthologyFactory.GeneratePrimaryActions(NUM_ACTIONS);
+
+            Stopwatch timer = Stopwatch.StartNew();
+            ExecutionManager.RunSim(NUM_ITERATIONS);
+            timer.Stop();
+            Assert.IsTrue(timer.ElapsedMilliseconds < 1, "Time elapsed = " + timer.ElapsedMilliseconds + "ms.");
+        }
+
+        [TestMethod]
+        public void TestTenThousandAgentsHundredLocations()
+        {
+            AnthologyFactory.GenerateAgents(10000, 40);
+            AnthologyFactory.GenerateSimLocations(100, 40);
+            AnthologyFactory.GeneratePrimaryActions(NUM_ACTIONS);
+
+            Stopwatch timer = Stopwatch.StartNew();
+            ExecutionManager.RunSim(NUM_ITERATIONS);
+            timer.Stop();
+            Assert.IsTrue(timer.ElapsedMilliseconds < 1, "Time elapsed = " + timer.ElapsedMilliseconds + "ms.");
+        }
+
+        [TestMethod]
+        public void TestTenThousandAgentsFiveHundredLocations()
+        {
+            AnthologyFactory.GenerateAgents(10000, 40);
+            AnthologyFactory.GenerateSimLocations(500, 40);
+            AnthologyFactory.GeneratePrimaryActions(NUM_ACTIONS);
+
+            Stopwatch timer = Stopwatch.StartNew();
+            ExecutionManager.RunSim(NUM_ITERATIONS);
+            timer.Stop();
+            Assert.IsTrue(timer.ElapsedMilliseconds < 1, "Time elapsed = " + timer.ElapsedMilliseconds + "ms.");
+        }
+
+        [TestMethod]
+        public void TestTenThousandAgentsThousandLocations()
+        {
+            AnthologyFactory.GenerateAgents(10000, 40);
+            AnthologyFactory.GenerateSimLocations(1000, 40);
+            AnthologyFactory.GeneratePrimaryActions(NUM_ACTIONS);
+
+            Stopwatch timer = Stopwatch.StartNew();
+            ExecutionManager.RunSim(NUM_ITERATIONS);
+            timer.Stop();
+            Assert.IsTrue(timer.ElapsedMilliseconds < 1, "Time elapsed = " + timer.ElapsedMilliseconds + "ms.");
+        }
+
+        [TestMethod]
+        public void TestHundredThousandAgentsThousandLocations()
+        {
+            AnthologyFactory.GenerateAgents(100000, 200);
+            AnthologyFactory.GenerateSimLocations(1000, 200);
+            AnthologyFactory.GeneratePrimaryActions(NUM_ACTIONS);
+
+            Stopwatch timer = Stopwatch.StartNew();
+            ExecutionManager.RunSim(NUM_ITERATIONS);
+            timer.Stop();
+            Assert.IsTrue(timer.ElapsedMilliseconds < 1, "Time elapsed = " + timer.ElapsedMilliseconds + "ms.");
+        }
+
+        [TestMethod]
+        public void TestHundredThousandAgentsFiveThousandLocations()
+        {
+            AnthologyFactory.GenerateAgents(100000, 200);
+            AnthologyFactory.GenerateSimLocations(5000, 200);
+            AnthologyFactory.GeneratePrimaryActions(NUM_ACTIONS);
+
+            Stopwatch timer = Stopwatch.StartNew();
+            ExecutionManager.RunSim(NUM_ITERATIONS);
+            timer.Stop();
+            Assert.IsTrue(timer.ElapsedMilliseconds < 1, "Time elapsed = " + timer.ElapsedMilliseconds + "ms.");
+        }
+
+        [TestMethod]
+        public void TestHundredThousandAgentsTenThousandLocations()
+        {
+            AnthologyFactory.GenerateAgents(100000, 200);
+            AnthologyFactory.GenerateSimLocations(10000, 200);
+            AnthologyFactory.GeneratePrimaryActions(NUM_ACTIONS);
+
+            Stopwatch timer = Stopwatch.StartNew();
+            ExecutionManager.RunSim(NUM_ITERATIONS);
+            timer.Stop();
+            Assert.IsTrue(timer.ElapsedMilliseconds < 1, "Time elapsed = " + timer.ElapsedMilliseconds + "ms.");
+        }
+
+        [TestMethod]
+        public void TestMillionAgentsTenThousandLocations()
+        {
+            AnthologyFactory.GenerateAgents(1000000, 400);
+            AnthologyFactory.GenerateSimLocations(10000, 400);
+            AnthologyFactory.GeneratePrimaryActions(NUM_ACTIONS);
+
+            Stopwatch timer = Stopwatch.StartNew();
+            ExecutionManager.RunSim(NUM_ITERATIONS);
+            timer.Stop();
+            Assert.IsTrue(timer.ElapsedMilliseconds < 1, "Time elapsed = " + timer.ElapsedMilliseconds + "ms.");
+        }
+
+        [TestMethod]
+        public void TestMillionAgentsFiftyThousandLocations()
+        {
+            AnthologyFactory.GenerateAgents(1000000, 400);
+            AnthologyFactory.GenerateSimLocations(50000, 400);
+            AnthologyFactory.GeneratePrimaryActions(NUM_ACTIONS);
+
+            Stopwatch timer = Stopwatch.StartNew();
+            ExecutionManager.RunSim(NUM_ITERATIONS);
+            timer.Stop();
+            Assert.IsTrue(timer.ElapsedMilliseconds < 1, "Time elapsed = " + timer.ElapsedMilliseconds + "ms.");
+        }
+
+        [TestMethod]
+        public void TestMillionAgentsHundredThousandLocations()
+        {
+            AnthologyFactory.GenerateAgents(1000000, 400);
+            AnthologyFactory.GenerateSimLocations(100000, 400);
+            AnthologyFactory.GeneratePrimaryActions(NUM_ACTIONS);
+
+            Stopwatch timer = Stopwatch.StartNew();
+            ExecutionManager.RunSim(NUM_ITERATIONS);
+            timer.Stop();
+            Assert.IsTrue(timer.ElapsedMilliseconds < 1, "Time elapsed = " + timer.ElapsedMilliseconds + "ms.");
         }
     }
 }
