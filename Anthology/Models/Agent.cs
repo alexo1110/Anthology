@@ -4,10 +4,10 @@ using System.Text.Json;
 namespace Anthology.Models
 {
     /**
- * Relationship class
- * Relationships are composed by agents, so the owning agent will always be the source of the relationship.
- * eg. an agent that has the 'brother' relationship with Norma is Norma's brother
- */
+     * Relationship class
+     * Relationships are composed by agents, so the owning agent will always be the source of the relationship.
+     * eg. an agent that has the 'brother' relationship with Norma is Norma's brother
+     */
     public class Relationship
     {
         /** The type of relationship, eg. 'student' or 'teacher' */
@@ -30,13 +30,13 @@ namespace Anthology.Models
         public string Name { get; set; } = string.Empty;
 
         /** Container of all the motive properties of this agent */
-        public Dictionary<string, Motive> Motives { get; set; } = new Dictionary<string, Motive>()
+        public Dictionary<string, float> Motives { get; set; } = new Dictionary<string, float>()
                                                                       {
-                                                                        { "accomplishment", new MAccomplishment() },
-                                                                        { "emotional", new MEmotional() },
-                                                                        { "financial", new MFinancial() },
-                                                                        { "social", new MSocial() },
-                                                                        { "physical", new MPhysical() } 
+                                                                        { "accomplishment", 1 },
+                                                                        { "emotional", 1 },
+                                                                        { "financial", 1 },
+                                                                        { "social", 1 },
+                                                                        { "physical", 1 } 
                                                                       };
 
         /** Set of all the relationships of this agent */
@@ -70,7 +70,7 @@ namespace Anthology.Models
             YDestination = destination.Y;
             SimLocation currentLoc = LocationManager.LocationGrid[XLocation][YLocation];
             OccupiedCounter = LocationManager.FindManhattanDistance(currentLoc, destination);
-            Console.WriteLine("time: " + time.ToString() + " | " + Name + ": Started " + CurrentAction.First().Name + "; Destination: " + destination.Name);
+/*            Console.WriteLine("time: " + time.ToString() + " | " + Name + ": Started " + CurrentAction.First().Name + "; Destination: " + destination.Name);*/
         }
 
         /**
@@ -97,7 +97,6 @@ namespace Anthology.Models
                 YDestination = -1;
                 return;
             }
-
             LocationManager.LocationGrid[XLocation][YLocation].AgentsPresent.Add(Name);
         }
 
@@ -115,13 +114,12 @@ namespace Anthology.Models
 
                 if (action is PrimaryAction pAction)
                 {
-                    foreach (Effect e in pAction.Effects)
+                    foreach (KeyValuePair<string, float> e in pAction.Effects)
                     {
-                        float delta = e.Delta;
-                        float current = Motives[e.Type].Amount;
-                        Motives[e.Type].Amount = Math.Clamp(delta + current, Motive.MIN, Motive.MAX);
+                        float delta = e.Value;
+                        float current = Motives[e.Key];
+                        Motives[e.Key] = Math.Clamp(delta + current, Motive.MIN, Motive.MAX);
                     }
-                    Console.WriteLine("time: " + World.Time.ToString() + " | " + Name + ": Finished " + action.Name);
                 }
                 else if (action is ScheduleAction sAction)
                 {
@@ -143,7 +141,6 @@ namespace Anthology.Models
                         {
                             target.CurrentAction.AddLast(ActionManager.GetActionByName(sAction.TargetAction));
                         }
-                        Console.WriteLine("time: " + World.Time.ToString() + " | " + target.Name + ": Affected by " + sAction.TargetAction);
                     }
                 }
             }
@@ -167,7 +164,6 @@ namespace Anthology.Models
                     CurrentTargets.Add(AgentManager.GetAgentByName(name));
                 }
             }
-            Console.WriteLine("time: " + World.Time.ToString() + " | " + Name + ": Started " + action.Name);
         }
 
         /**
@@ -226,9 +222,9 @@ namespace Anthology.Models
                     if (nearestLocation == null) continue;
                     travelTime = LocationManager.FindManhattanDistance(nearestLocation, currentLoc);
                     float deltaUtility = ActionManager.GetEffectDeltaForAgentAction(this, action);
-                    actionSelectLog.Add("Action Utility: " + deltaUtility.ToString());
+/*                    actionSelectLog.Add("Action Utility: " + deltaUtility.ToString());*/
                     deltaUtility /= (action.MinTime + travelTime);
-                    actionSelectLog.Add("Action Weighted Utility: " + deltaUtility.ToString());
+/*                    actionSelectLog.Add("Action Weighted Utility: " + deltaUtility.ToString());*/
 
                     if (deltaUtility == maxDeltaUtility)
                     {
@@ -243,14 +239,13 @@ namespace Anthology.Models
                         currentChoice.Add(action);
                         currentDest.Add(nearestLocation);
                     }
-                    if (currentChoice.Count > 0)
+/*                    if (currentChoice.Count > 0)
                     {
                         actionSelectLog.Add("Current Choice: " + currentChoice.First().Name);
                         actionSelectLog.Add("Current Destination: " + currentDest.First().Name);
-                    }
+                    }*/
                 }
             }
-            // Console.WriteLine(JsonSerializer.Serialize(actionSelectLog, UI.Jso));
             Random r = new();
             int idx = r.Next(0, currentChoice.Count);
             Action choice = currentChoice[idx];
@@ -272,9 +267,9 @@ namespace Anthology.Models
         /** Returns whether the agent is content, ie. checks to see if an agent has the maximum motives */
         public bool IsContent()
         {
-            foreach (Motive m in Motives.Values)
+            foreach (float m in Motives.Values)
             {
-                if (m.Amount < Motive.MAX) return false;
+                if (m < Motive.MAX) return false;
             }
             return true;
         }
@@ -282,9 +277,9 @@ namespace Anthology.Models
         /** Decrements all the motives of this agent */
         public void DecrementMotives()
         {
-            foreach (Motive m in Motives.Values)
+            foreach(string m in Motives.Keys)
             {
-                m.Amount = Math.Clamp(m.Amount - 1, Motive.MIN, Motive.MAX);
+                Motives[m] = Math.Clamp(Motives[m] - 1, Motive.MIN, Motive.MAX);
             }
         }
     }
@@ -353,9 +348,9 @@ namespace Anthology.Models
                 serializableAgent.Relationships.Add(r);
             }
 
-            foreach (Motive m in agent.Motives.Values)
+            foreach(KeyValuePair<string, float> m in agent.Motives)
             {
-                serializableAgent.Motives.Add(m.Type, m.Amount);
+                serializableAgent.Motives.Add(m.Key, m.Value);
             }
 
             return serializableAgent;
@@ -378,7 +373,7 @@ namespace Anthology.Models
 
             foreach (KeyValuePair<string, float> e in sAgent.Motives)
             {
-                agent.Motives[e.Key].Amount = e.Value;
+                agent.Motives[e.Key] = e.Value;
             }
             foreach (Relationship r in sAgent.Relationships)
             {

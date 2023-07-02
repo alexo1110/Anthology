@@ -101,7 +101,7 @@ namespace Anthology.Models
     {
         /** List of resulting changes to the motives of the agent that occur after this action is executed */
         [JsonPropertyOrder(1)]
-        public HashSet<Effect> Effects { get; set; } = new HashSet<Effect>();
+        public Dictionary<string, float> Effects { get; set; } = new Dictionary<string, float>();
     }
 
     /**
