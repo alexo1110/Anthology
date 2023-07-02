@@ -175,7 +175,7 @@ namespace Anthology.Models
             float maxDeltaUtility = 0f;
             List<Action> currentChoice = new();
             List<SimLocation> currentDest = new();
-            List<string> actionSelectLog = new();
+            //List<string> actionSelectLog = new();
             SimLocation currentLoc = LocationManager.LocationGrid[XLocation][YLocation];
             HashSet<Action> actionOptions = new();
             actionOptions.UnionWith(ActionManager.Actions.ScheduleActions);
@@ -184,7 +184,7 @@ namespace Anthology.Models
             foreach(Action action in actionOptions)
             {
                 if (action.Hidden) continue;
-                actionSelectLog.Add("Action: " + action.Name);
+                //actionSelectLog.Add("Action: " + action.Name);
 
                 int travelTime;
                 HashSet<SimLocation> possibleLocations = new();
@@ -251,7 +251,6 @@ namespace Anthology.Models
             Action choice = currentChoice[idx];
             SimLocation dest = currentDest[idx];
             CurrentAction.AddLast(choice);
-            
 
             if (dest != null && dest != currentLoc)
             {

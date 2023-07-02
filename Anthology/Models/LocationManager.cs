@@ -51,6 +51,97 @@
             return location;
         }
 
+        /** Gets the set of all named locations in the square area defined by the given center coordinates and radius */
+        public static HashSet<SimLocation> GetSimLocationsByArea(int centerX, int centerY, int radius)
+        {
+            HashSet<SimLocation> areaSet = new();
+            int startX = centerX < radius ? 0 : centerX - radius;
+            int startY = centerY < radius ? 0 : centerY - radius;
+            int endX = centerX + radius;
+            int endY = centerY + radius;
+            if (UI.GridSize <= endX) endX = UI.GridSize - 1;
+            if (UI.GridSize <= endY) endY = UI.GridSize - 1;
+
+            SimLocation loc = new();
+            for(int x = startX; x <= endX; x++)
+            {
+                for (int y = startY; y <= endY; y++)
+                {
+                    loc = LocationGrid[x][y];
+                    if (loc.Name != string.Empty)
+                    {
+                        areaSet.Add(loc);
+                    }
+                }
+            }
+            return areaSet;
+        }
+
+        /** Gets the set of all named locations in the square (not the area) defined by the given center coordinates and radius */
+        public static HashSet<SimLocation> GetSimLocationsBySquare(int centerX, int centerY, int radius)
+        {
+            HashSet<SimLocation> squareSet = new();
+            int left = centerX - radius;
+            int right = centerX + radius;
+            int bot = centerY - radius;
+            int top = centerY + radius;
+            bool leftValid = left >= 0;
+            bool rightValid = right <= UI.GridSize;
+            bool botValid = bot >= 0;
+            bool topValid = top <= UI.GridSize;
+            SimLocation loc;
+
+            if (botValid)
+            {
+                for (int x = left; x <= right; x++)
+                {
+                    if (x >= 0 && x <= UI.GridSize)
+                    {
+                        loc = LocationGrid[x][bot];
+                        if (loc.Name != string.Empty)
+                            squareSet.Add(loc);
+                    }
+                }
+            }
+            if (topValid)
+            {
+                for (int x = left; x <= right; x++)
+                {
+                    if (x >= 0 && x <= UI.GridSize)
+                    {
+                        loc = LocationGrid[x][top];
+                        if (loc.Name != string.Empty)
+                            squareSet.Add(loc);
+                    }
+                }
+            }
+            if (leftValid)
+            {
+                for (int y = bot + 1; y < top; y++)
+                {
+                    if (y >=  0 && y <= UI.GridSize)
+                    {
+                        loc = LocationGrid[left][y];
+                        if (loc.Name != string.Empty)
+                            squareSet.Add(loc);
+                    }
+                }
+            }
+            if (rightValid)
+            {
+                for (int y = bot + 1; y < top; y++)
+                {
+                    if (y >= 0 && y <= UI.GridSize)
+                    {
+                        loc = LocationGrid[right][y];
+                        if (loc.Name != string.Empty)
+                            squareSet.Add(loc);
+                    }
+                }
+            }
+            return squareSet;
+        }
+
         /** 
          * Filter given set of locations to find those locations that satisfy conditions specified in the location requirement
          * Returns a set of locations that match the HasAllOf, HasOneOrMOreOf, and HasNoneOf constraints
