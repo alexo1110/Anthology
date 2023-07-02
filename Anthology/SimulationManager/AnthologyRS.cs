@@ -19,8 +19,7 @@ namespace Anthology.SimulationManager
                 if (!npcs.TryGetValue(a.Name, out NPC? npc))
                     npc = new NPC();
                 npc.Name = a.Name;
-                npc.Coordinates.X = a.XLocation;
-                npc.Coordinates.Y = a.YLocation;
+                npc.SetCoordinates(a.XLocation, a.YLocation);
                 if (a.CurrentAction != null && a.CurrentAction.Count > 0)
                 {
                     npc.CurrentAction.Name = a.CurrentAction.First().Name;
@@ -60,8 +59,8 @@ namespace Anthology.SimulationManager
         {
             bool shouldLog = false;
             Agent agent = AgentManager.GetAgentByName(npc.Name);
-            npc.Coordinates.X = agent.XLocation;
-            npc.Coordinates.Y = agent.YLocation;
+            npc.SetCoordinates(agent.XLocation, agent.YLocation);
+
             if (agent.XDestination != -1)
             {
                 npc.Destination = LocationManager.LocationGrid[agent.XDestination][agent.YDestination].Name;

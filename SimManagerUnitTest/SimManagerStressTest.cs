@@ -16,11 +16,11 @@ namespace SimManagerUnitTest
         private const int NUM_ACTIONS = 10; // number of possible actions each agent can consider choosing
         private const int NUM_ITERATIONS = 60; // number of iterations to run each test
         private const int GRID_SIZE = 400; // size of the map grid for each test
-        private static bool TEST_HUNDRED = true; // set to true to run tests for hundred agents
-        private static bool TEST_THOUSAND = true; // set to true to run tests for thousand agents
-        private static bool TEST_TEN_THOUSAND = false; // set to true to run tests for ten thousand agents
-        private static bool TEST_HUNDRED_THOUSAND = false; // set to true to run tests for hundred thousand agents
-        private static bool TEST_MILLION = false; // set to true to run tests for million agents
+        private readonly static bool TEST_HUNDRED = false; // set to true to run tests for hundred agents
+        private readonly static bool TEST_THOUSAND = false; // set to true to run tests for thousand agents
+        private readonly static bool TEST_TEN_THOUSAND = false; // set to true to run tests for ten thousand agents
+        private readonly static bool TEST_HUNDRED_THOUSAND = false; // set to true to run tests for hundred thousand agents
+        private readonly static bool TEST_MILLION = false; // set to true to run tests for million agents
 
         [TestMethod]
         public void TestHundredAgentsFiveLocations()
@@ -484,7 +484,7 @@ namespace SimManagerUnitTest
             Assert.IsTrue(timer.ElapsedMilliseconds < 1, "Time elapsed = " + timer.ElapsedMilliseconds + "ms.");
         }
 
-        //[TestMethod]
+        [TestMethod]
         public void TestHundredThousandAgentsThousandLocations()
         {
             if (!TEST_HUNDRED_THOUSAND) return;
