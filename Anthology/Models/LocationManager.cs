@@ -55,91 +55,112 @@
         public static HashSet<SimLocation> GetSimLocationsByArea(int centerX, int centerY, int radius)
         {
             HashSet<SimLocation> areaSet = new();
-            int startX = centerX < radius ? 0 : centerX - radius;
-            int startY = centerY < radius ? 0 : centerY - radius;
-            int endX = centerX + radius;
-            int endY = centerY + radius;
-            if (UI.GridSize <= endX) endX = UI.GridSize - 1;
-            if (UI.GridSize <= endY) endY = UI.GridSize - 1;
-
-            SimLocation loc = new();
-            for(int x = startX; x <= endX; x++)
+            int left = centerX - radius;
+            int right = centerX + radius;
+            
+            int ya = centerY;
+            int yb = centerY;
+            SimLocation loc;
+            
+            // Right half and center vertical
+            for(int x = right; x >= centerX; x--)
             {
-                for (int y = startY; y <= endY; y++)
+                if (x < UI.GridSize)
                 {
-                    loc = LocationGrid[x][y];
-                    if (loc.Name != string.Empty)
+                    for (int y = yb; y <= ya; y++)
                     {
-                        areaSet.Add(loc);
+                        if (y >= 0 && y < UI.GridSize)
+                        {
+                            loc = LocationGrid[x][y];
+                            if (loc.Name != string.Empty)
+                                areaSet.Add(loc);
+                        }
                     }
                 }
+                ya++;
+                yb--;
+            }
+            // Left half, skip center vertical
+            for (int x = left; x < centerX; x++)
+            {
+                if (x >= 0)
+                {
+                    for (int y = yb; y <= ya; y++)
+                    {
+                        if (y >= 0 && y < UI.GridSize)
+                        {
+                            loc = LocationGrid[x][y];
+                            if (loc.Name != string.Empty)
+                                areaSet.Add(loc);
+                        }
+                    }
+                }
+                ya--;
+                yb++;
             }
             return areaSet;
         }
 
         /** Gets the set of all named locations in the square (not the area) defined by the given center coordinates and radius */
-        public static HashSet<SimLocation> GetSimLocationsBySquare(int centerX, int centerY, int radius)
+        public static HashSet<SimLocation> GetSimLocationsByRange(int centerX, int centerY, int dist)
         {
-            HashSet<SimLocation> squareSet = new();
-            int left = centerX - radius;
-            int right = centerX + radius;
-            int bot = centerY - radius;
-            int top = centerY + radius;
-            bool leftValid = left >= 0;
-            bool rightValid = right <= UI.GridSize;
-            bool botValid = bot >= 0;
-            bool topValid = top <= UI.GridSize;
+            HashSet<SimLocation> rangeSet = new();
+
+            int top = centerY + dist;
+            int bot = centerY - dist;
+            int left = centerX - dist;
+            int right = centerX + dist;
+
+            int ya = top;
+            int yb = bot;
             SimLocation loc;
 
-            if (botValid)
+            // Right half, top and bottom vertices
+            for (int x = centerX; x <= right; x++)
             {
-                for (int x = left; x <= right; x++)
+                if (x < UI.GridSize)
                 {
-                    if (x >= 0 && x <= UI.GridSize)
+                    if (ya < UI.GridSize)
                     {
-                        loc = LocationGrid[x][bot];
+                        loc = LocationManager.LocationGrid[x][ya];
                         if (loc.Name != string.Empty)
-                            squareSet.Add(loc);
+                            rangeSet.Add(loc);
+                    }
+                    if (yb >= 0 && yb != ya)
+                    {
+                        loc = LocationManager.LocationGrid[x][yb];
+                        if (loc.Name != string.Empty)
+                            rangeSet.Add(loc);
                     }
                 }
+                ya--;
+                yb++;
             }
-            if (topValid)
+            ya = top - 1;
+            yb = bot + 1;
+
+            // Left half, skip top and bottom vertices
+            for (int x = centerX - 1; x >= left; x--)
             {
-                for (int x = left; x <= right; x++)
+                if (x >= 0)
                 {
-                    if (x >= 0 && x <= UI.GridSize)
+                    if (ya < UI.GridSize)
                     {
-                        loc = LocationGrid[x][top];
+                        loc = LocationManager.LocationGrid[x][ya];
                         if (loc.Name != string.Empty)
-                            squareSet.Add(loc);
+                            rangeSet.Add(loc);
+                    }
+                    if (yb >= 0 && yb != ya)
+                    {
+                        loc = LocationManager.LocationGrid[x][yb];
+                        if (loc.Name != string.Empty)
+                            rangeSet.Add(loc);
                     }
                 }
+                ya--;
+                yb++;
             }
-            if (leftValid)
-            {
-                for (int y = bot + 1; y < top; y++)
-                {
-                    if (y >=  0 && y <= UI.GridSize)
-                    {
-                        loc = LocationGrid[left][y];
-                        if (loc.Name != string.Empty)
-                            squareSet.Add(loc);
-                    }
-                }
-            }
-            if (rightValid)
-            {
-                for (int y = bot + 1; y < top; y++)
-                {
-                    if (y >= 0 && y <= UI.GridSize)
-                    {
-                        loc = LocationGrid[right][y];
-                        if (loc.Name != string.Empty)
-                            squareSet.Add(loc);
-                    }
-                }
-            }
-            return squareSet;
+            return rangeSet;
         }
 
         /** 

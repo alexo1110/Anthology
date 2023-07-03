@@ -1,3 +1,4 @@
+using Anthology.Models;
 using Anthology.SimulationManager;
 using Anthology.SimulationManager.HistoryManager;
 using System.Numerics;
@@ -72,6 +73,29 @@ namespace SimManagerUnitTest
             Assert.IsTrue(locations.ContainsKey(new Location.Coords(1, 3)));
             Assert.AreEqual("Physics Hall", locations[new Location.Coords(1, 3)].Name);
             Assert.IsTrue(locations[new Location.Coords(1, 2)].Tags.Contains("outdoor"));
+        }
+
+        [TestMethod]
+        public void TestLocationFilters()
+        {
+            HashSet<SimLocation> locSet = LocationManager.GetSimLocationsByRange(1, 2, 0);
+            Assert.AreEqual(1, locSet.Count);
+            Assert.AreEqual("Greenway", locSet.First().Name);
+            locSet = LocationManager.GetSimLocationsByRange(1, 2, 1);
+            Assert.AreEqual(2, locSet.Count);
+            locSet = LocationManager.GetSimLocationsByRange(1, 2, 2);
+            Assert.AreEqual(1, locSet.Count);
+            Assert.AreEqual("Dorm", locSet.First().Name);
+
+            locSet = LocationManager.GetSimLocationsByArea(1, 2, 0);
+            Assert.AreEqual(1, locSet.Count);
+            Assert.AreEqual("Greenway", locSet.First().Name);
+            locSet = LocationManager.GetSimLocationsByArea(1, 2, 1);
+            Assert.AreEqual(3, locSet.Count);
+            locSet = LocationManager.GetSimLocationsByArea(1, 2, 2);
+            Assert.AreEqual(4, locSet.Count);
+            locSet = LocationManager.GetSimLocationsByArea(1, 2, 6);
+            Assert.AreEqual(5, locSet.Count);
         }
 
         [TestMethod]
