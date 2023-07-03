@@ -31,13 +31,15 @@ namespace SimManagerUnitTest
         [TestMethod]
         public void TestHistoryLogger()
         {
+            MongoHM? mongoHM = SimManager.History as MongoHM;
+            Assert.IsNotNull(mongoHM);
+            Assert.IsTrue(mongoHM.IsConnected());
             Assert.IsFalse(db.ListCollectionNames().ToList().Contains(SAVE_STATES_COLLECTION));
             SimManager.History?.SaveState("test_state");
             Assert.IsTrue(db.ListCollectionNames().ToList().Contains("test_state"));
 
             SimManager.GetIteration();
             SimManager.LoadState("test_state");
-            
         }
     }
 }

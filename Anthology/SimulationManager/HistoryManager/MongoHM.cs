@@ -89,5 +89,10 @@ namespace Anthology.SimulationManager.HistoryManager
         {
             Database.GetCollection<EventLog>(log).DeleteMany(Builders<EventLog>.Filter.Empty);
         }
+
+        public bool IsConnected()
+        {
+            return Database != null;
+        }
     }
 }
