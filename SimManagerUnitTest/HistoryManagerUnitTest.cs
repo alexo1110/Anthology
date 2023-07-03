@@ -36,7 +36,8 @@ namespace SimManagerUnitTest
             Assert.IsTrue(mongoHM.IsConnected());
             Assert.IsFalse(db.ListCollectionNames().ToList().Contains(SAVE_STATES_COLLECTION));
             SimManager.History?.SaveState("test_state");
-            Assert.IsTrue(db.ListCollectionNames().ToList().Contains("test_state"));
+            Assert.IsTrue(db.ListCollectionNames().ToList().Contains("save_states"));
+            Assert.IsTrue(db.GetCollection<SimState>("save_states").Find(simState => simState.SimName.Equals("test_state")).CountDocuments() > 0);
 
             SimManager.GetIteration();
             SimManager.LoadState("test_state");
