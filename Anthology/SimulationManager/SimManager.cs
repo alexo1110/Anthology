@@ -119,20 +119,20 @@ namespace Anthology.SimulationManager
 
         public static void SaveState(string stateName = "")
         {
-            History.SaveState(stateName);
+            History?.SaveState(stateName);
         }
 
         public static void LoadState(string stateName)
         {
-            SimState state = History?.LoadState(stateName);
+            SimState? state = (History?.LoadState(stateName)) ?? throw new ArgumentException("State " + stateName + " could not be loaded.");
             foreach (Location newLoc in state.Locations)
                 Locations[newLoc.Coordinates] = newLoc;
-            Reality.LoadLocations(Locations);
+            Reality?.LoadLocations(Locations);
 
             foreach (NPC newNPC in state.NPCs)
             {
                 NPCs[newNPC.Name] = newNPC;
-                Reality.PushUpdatedNpc(newNPC);              
+                Reality?.PushUpdatedNpc(newNPC);              
             }
         }
     }

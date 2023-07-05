@@ -78,7 +78,7 @@ namespace Anthology.Models
                 {
                     if (agent.CurrentAction.Count == 0)
                     {
-                        agent.SelectNextAction();
+                        agent.SelectNextActionV2();
                     }
                     else
                     {
