@@ -93,13 +93,6 @@ namespace Anthology.SimulationManager
                 }
                 History?.LogNpcStates(LOG_PATH);
             }
-            Reality?.Run();
-            Knowledge?.Run();
-            foreach (NPC npc in NPCs.Values)
-            {
-                Reality?.UpdateNpc(npc);
-                Knowledge?.UpdateNpc(npc);
-            }
         }
 
         /**
