@@ -24,7 +24,7 @@ namespace SimManagerUnitTest
             }
             catch (Exception e)
             {
-                Assert.Fail("Failed to initialize Sim Manager: " + e.Message);
+                Assert.Fail("Failed to initialize Sim Manager: " + e.Message + "\n" + e.ToString());
             }
         }
 

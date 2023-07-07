@@ -16,7 +16,7 @@
             LocationGrid.Clear();
             for (int i = 0; i < n; i++)
             {
-                LocationGrid[i] = new Dictionary<int, SimLocation>();
+                LocationGrid[i] = new();
                 for (int k = 0; k < n; k++)
                 {
                     LocationGrid[i][k] = new SimLocation();
@@ -36,7 +36,35 @@
                 }
             }
             LocationSet.Add(location);
+            int max = Math.Max(location.X, location.Y);
+            if (max >= UI.GridSize)
+            {
+                for (int i = UI.GridSize; i <= max; i++)
+                {
+                    LocationGrid.Add(i, new());
+                    for (int k = 0; k <= max; k++)
+                    {
+                        LocationGrid[i].Add(k, new());
+                    }
+                }
+                for (int i = 0; i < UI.GridSize; i++)
+                {
+                    for (int k = UI.GridSize; k <= max; k++)
+                    {
+                        LocationGrid[i].Add(k, new());
+                    }
+                }
+                UI.GridSize = max + 1;
+            }
             LocationGrid[location.X][location.Y] = location;
+        }
+
+        /** Create and add a location to both the location set and the location grid */
+        public static void AddLocation(string name, int x, int y, IEnumerable<string> tags)
+        {
+            HashSet<string> newTags = new();
+            newTags.UnionWith(tags);
+            AddLocation(new() { Name = name, X = x, Y = y, Tags = newTags });
         }
 
         /** Finds the location with the matching name */
