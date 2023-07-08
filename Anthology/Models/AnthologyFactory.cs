@@ -6,6 +6,7 @@ namespace Anthology.Models
     {
         public static void GenerateAgents(uint n, int gridSize)
         {
+            UI.GridSize = gridSize;
             AgentManager.Agents.Clear();
 
             Random r = new();
@@ -31,6 +32,7 @@ namespace Anthology.Models
 
         public static void GenerateSimLocations(uint n, int gridSize)
         {
+            UI.GridSize = gridSize;
             LocationManager.LocationSet.Clear();
             LocationManager.LocationGrid.Clear();
             for (int i = 0; i < gridSize; i++)

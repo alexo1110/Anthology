@@ -1,3 +1,4 @@
+using Anthology.Models;
 using Anthology.SimulationManager;
 using Anthology.SimulationManager.HistoryManager;
 using System.Numerics;
@@ -82,6 +83,18 @@ namespace SimManagerUnitTest
             Assert.AreEqual("travel_action", SimManager.NPCs["Norma"].CurrentAction.Name);
             SimManager.GetIteration(20);
             Assert.AreNotEqual("travel_action", SimManager.NPCs["Norma"].CurrentAction.Name);
+        }
+
+        [TestMethod]
+        public void TestPushingLocationsFromFrontend()
+        {
+            SimManager.Locations.Clear();
+            SimManager.Locations.Add(new(1, 1), new() { Coordinates = new() { X = 1, Y = 1 }, Name = "Gas Station", Tags = { "Gas", "Parking" } });
+            SimManager.Locations.Add(new(2, 2), new() { Coordinates = new() { X = 2, Y = 2 }, Name = "Grocery Store", Tags = { "Food", "Parking" } });
+            SimManager.Reality?.PushLocations();
+            Assert.AreEqual(2, LocationManager.LocationSet.Count);
+            Assert.AreEqual("Gas Station", LocationManager.LocationGrid[1][1].Name);
+            Assert.AreEqual("Grocery Store", LocationManager.LocationGrid[2][2].Name);
         }
     }
 }
